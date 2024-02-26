@@ -1,6 +1,7 @@
 # Cuatrovientos BlaBlarCar App
 
 Welcome to the Cuatrovientos High School carpooling app – BlaBlarCar! Developed by a group of dedicated students, including Mikel Echeverria, Juan Hidalgo, and Aitor Gorostizu, this app aims to reduce emissions and promote cost-saving by facilitating shared transportation among institute students.
+
 ![blablarcar](https://github.com/byronnDev/BlaBlaCarCuatrovientos/assets/38868773/fcdc3cb1-defd-47a8-99de-967012701c6b)
 
 ## Developers
