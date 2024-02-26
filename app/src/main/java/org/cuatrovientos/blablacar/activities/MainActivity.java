@@ -7,7 +7,8 @@ import android.os.Bundle;
 import org.cuatrovientos.blablacar.R;
 
 public class MainActivity extends AppCompatActivity {
-
+   // private MapView mMapView;
+ //   private MapController mMapController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
