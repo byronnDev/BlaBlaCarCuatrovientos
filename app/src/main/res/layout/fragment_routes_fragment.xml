@@ -3,7 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< HEAD
     tools:context=".fragments.routes_fragment">
+=======
+    tools:context=".activities.fragments.routes_fragment">
+>>>>>>> origin/main
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
