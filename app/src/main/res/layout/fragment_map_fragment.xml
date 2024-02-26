@@ -2,17 +2,15 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-<<<<<<< HEAD
-    tools:context=".fragments.map_fragment">
-=======
-    tools:context=".activities.fragments.map_fragment">
->>>>>>> origin/main
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/mapTxt"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
+        android:background="#4CAF50"
+        android:text="MAP"
+        android:textAlignment="center"
+        android:textSize="60sp"
+        android:textStyle="bold" />
 </FrameLayout>
