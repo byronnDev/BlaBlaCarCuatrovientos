@@ -11,11 +11,11 @@ import android.view.ViewGroup;
 import org.cuatrovientos.blablacar.R;
 
 
-public class routes_fragment extends Fragment {
+public class details_fragment extends Fragment {
 
 
 
-    public routes_fragment() {
+    public details_fragment() {
         // Required empty public constructor
     }
 

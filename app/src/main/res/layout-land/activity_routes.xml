@@ -4,24 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activities.MainActivity">
+    android:orientation="horizontal"
+    tools:context=".activities.RoutesActivity">
 
-
-    <fragment
-        android:id="@+id/mapFragment"
-        android:name="org.cuatrovientos.blablacar.fragments.map_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="50"
-        tools:layout="@layout/fragment_map_fragment" />
 
     <fragment
         android:id="@+id/routesFragment"
         android:name="org.cuatrovientos.blablacar.fragments.details_fragment"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="70"
+        android:layout_weight="50"
         tools:layout="@layout/fragment_routes_fragment" />
-    
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="org.cuatrovientos.blablacar.fragments.map_fragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="50"
+        tools:layout="@layout/fragment_map_fragment" />
+
 </LinearLayout>
