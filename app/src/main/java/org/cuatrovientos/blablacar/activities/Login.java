@@ -54,7 +54,7 @@ public class Login extends AppCompatActivity {
         FirebaseAuth.getInstance()
                 .signInWithEmailAndPassword(user, pass).addOnCompleteListener(command -> {
             if (command.isSuccessful()) {
-                goHome();
+                goHome(txtUser.getText().toString());
             } else {
                 showAlert();
             }
@@ -65,7 +65,7 @@ public class Login extends AppCompatActivity {
         FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(user, pass).addOnCompleteListener(command -> {
             if (command.isSuccessful()) {
-                goHome();
+                goHome(txtUser.getText().toString());
             } else {
                 showAlert();
             }
@@ -76,10 +76,10 @@ public class Login extends AppCompatActivity {
         return !txtUser.getText().toString().isEmpty() && !txtPass.getText().toString().isEmpty();
     }
 
-    private void goHome() {
+    private void goHome(String email) {
         Intent intent = new Intent(Login.this, MainActivity.class);
-        // Set the new task and clear flags
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        intent.putExtra("email", email);
         // Start the new activity
         startActivity(intent);
         // Finish the current activity
