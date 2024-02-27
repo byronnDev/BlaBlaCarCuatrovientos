@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "757135302431",
+    "project_id": "blablarcarcuatrovientos",
+    "storage_bucket": "blablarcarcuatrovientos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757135302431:android:f61793eb992f6f06e91a2a",
+        "android_client_info": {
+          "package_name": "org.cuatrovientos.blablacar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXj1_izplRhFhghF9Zt1UFadqD8WQmbQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
