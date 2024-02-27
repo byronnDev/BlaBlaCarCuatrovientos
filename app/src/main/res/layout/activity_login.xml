@@ -29,12 +29,13 @@
         app:srcCompat="@drawable/logo" />
 
     <EditText
-        android:id="@+id/LoginTxtContraseña"
+        android:id="@+id/LoginTxtContrasena"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:ems="10"
         android:inputType="textPassword"
+        android:text="123456"
         app:layout_constraintBottom_toBottomOf="@+id/LoginLblContraseña"
         app:layout_constraintStart_toEndOf="@+id/LoginLblContraseña"
         app:layout_constraintTop_toTopOf="@+id/LoginLblContraseña"
@@ -71,7 +72,7 @@
         android:layout_marginStart="44dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Name"
+        android:text="test@test.com"
         app:layout_constraintBottom_toBottomOf="@+id/LoginLblUsuario"
         app:layout_constraintStart_toEndOf="@+id/LoginLblUsuario"
         app:layout_constraintTop_toTopOf="@+id/LoginLblUsuario"
