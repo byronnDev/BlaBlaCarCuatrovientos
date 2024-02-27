@@ -76,10 +76,6 @@ public class Login extends AppCompatActivity {
         return !txtUser.getText().toString().isEmpty() && !txtPass.getText().toString().isEmpty();
     }
 
-    private void Error(String message) {
-        Toast.makeText(getApplicationContext(),message, Toast.LENGTH_LONG).show();
-    }
-
     private void goHome() {
         Intent intent = new Intent(Login.this, MainActivity.class);
         // Set the new task and clear flags
