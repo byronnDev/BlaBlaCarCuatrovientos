@@ -9,12 +9,20 @@ public class Route {
     private String horaSalida;
     private Date fechaCreacion;
 
-    public Route(int id, String lugarInicio, String lugarFin, String horaSalida, Date fechaCreacion) {
+    public Route(int id, String lugarInicio, String horaSalida) {
         this.id = id;
         this.lugarInicio = lugarInicio;
-        this.lugarFin = lugarFin;
+        this.lugarFin = "42.82434579444012, -1.6598648266999774";
         this.horaSalida = horaSalida;
-        this.fechaCreacion = fechaCreacion;
+        this.fechaCreacion =  new Date(); //Formato EEE MMM dd HH:mm:ss zzz yyyy
+                                            //EEE: Día de la semana abreviado (por ejemplo, "Mon" para lunes).
+                                            //MMM: Mes abreviado (por ejemplo, "Jan" para enero).
+                                            //dd: Día del mes en formato numérico (por ejemplo, "03" para el tercer día del mes).
+                                            //HH: Hora en formato de 24 horas.
+                                            //mm: Minuto.
+                                            //ss: Segundo.
+                                            //zzz: Zona horaria.
+                                            //yyyy: Año.
     }
 
     public int getId() {
