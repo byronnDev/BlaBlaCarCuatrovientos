@@ -10,4 +10,7 @@
     <string name="other_options_text">-- Otras opciones --</string>
     <string name="login_error_message">Error: El usuarios no existe</string>
     <string name="error_user_auth">Error: Se ha producido un error autenticando el usuario</string>
+    <string name="addRoutes">Añadir Rutas</string>
+    <string name="profile">Perfil</string>
+    <string name="home">Inicio</string>
 </resources>

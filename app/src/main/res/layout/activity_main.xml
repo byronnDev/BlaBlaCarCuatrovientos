@@ -7,21 +7,18 @@
     android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
-
-    <fragment
-        android:id="@+id/mapFragment"
-        android:name="org.cuatrovientos.blablacar.fragments.map_fragment"
+    <FrameLayout
+        android:id="@+id/defaultView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="50"
-        tools:layout="@layout/fragment_map_fragment" />
+        android:layout_height="0dp"
+        android:layout_weight="89"
+        />
 
-    <fragment
-        android:id="@+id/routesFragment"
-        android:name="org.cuatrovientos.blablacar.fragments.details_fragment"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="70"
-        tools:layout="@layout/fragment_routes_fragment" />
-    
+        android:layout_height="0dp"
+        android:layout_weight="11"
+        app:menu="@menu/bottom_nav_menu" />
+
 </LinearLayout>

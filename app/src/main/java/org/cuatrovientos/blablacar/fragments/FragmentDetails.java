@@ -3,20 +3,20 @@ package org.cuatrovientos.blablacar.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import org.cuatrovientos.blablacar.R;
 
 
-public class map_fragment extends Fragment {
+public class FragmentDetails extends Fragment {
 
+    RecyclerView recyclerRutas;
 
-
-    public map_fragment() {
+    public FragmentDetails() {
         // Required empty public constructor
     }
 
@@ -24,21 +24,21 @@ public class map_fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_map_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_routes, container, false);
 
         //TODO
         //vincular los items del xml a variables
 
+        //poner toda la informacion en los textos del xml
+
+
+
+
+
         return view;
     }
 
-    public void renderData(int idRuta) {
-        //TODO
-        //crear un objeto de tipo Ruta y construirlo, luego el resto de la logica de la clase
-
-
-
-
-
+    public interface DataListener {
+        void sendData(int idRuta);
     }
 }

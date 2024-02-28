@@ -10,18 +10,18 @@
 
     <fragment
         android:id="@+id/routesFragment"
-        android:name="org.cuatrovientos.blablacar.fragments.details_fragment"
+        android:name="org.cuatrovientos.blablacar.fragments.FragmentDetails"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="50"
-        tools:layout="@layout/fragment_routes_fragment" />
+        tools:layout="@layout/fragment_routes" />
 
     <fragment
         android:id="@+id/mapFragment"
-        android:name="org.cuatrovientos.blablacar.fragments.map_fragment"
+        android:name="org.cuatrovientos.blablacar.fragments.FragmentMap"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="50"
-        tools:layout="@layout/fragment_map_fragment" />
+        tools:layout="@layout/fragment_map" />
 
 </LinearLayout>

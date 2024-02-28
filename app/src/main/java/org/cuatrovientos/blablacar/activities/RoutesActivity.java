@@ -1,16 +1,14 @@
 package org.cuatrovientos.blablacar.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import org.cuatrovientos.blablacar.R;
-import org.cuatrovientos.blablacar.fragments.details_fragment;
-import org.cuatrovientos.blablacar.fragments.map_fragment;
+import org.cuatrovientos.blablacar.fragments.FragmentDetails;
+import org.cuatrovientos.blablacar.fragments.FragmentMap;
 
-public class RoutesActivity extends FragmentActivity implements details_fragment.DataListener {
+public class RoutesActivity extends FragmentActivity implements FragmentDetails.DataListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +19,7 @@ public class RoutesActivity extends FragmentActivity implements details_fragment
     }
 
     public void sendData(int idRuta) {
-        map_fragment mapFragment = (map_fragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
+        FragmentMap mapFragment = (FragmentMap) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.renderData(idRuta);
     }
 
