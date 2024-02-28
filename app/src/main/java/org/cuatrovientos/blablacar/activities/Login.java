@@ -82,6 +82,7 @@ public class Login extends AppCompatActivity {
         FirebaseAuth.getInstance()
                 .signInWithEmailAndPassword(user, pass).addOnCompleteListener(command -> {
             if (command.isSuccessful()) {
+                logedUser.setLogedUser(new User(user));
                 goHome(txtUser.getText().toString());
             } else {
                 showAlert();

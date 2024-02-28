@@ -15,6 +15,9 @@
         <activity
             android:name=".activities.RoutesActivity"
             android:exported="false" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCZwqzkiGQojC-ASjqKXGlpvbOTFCVUZIM"/>
         <activity
             android:name=".activities.Login"
             android:exported="true">

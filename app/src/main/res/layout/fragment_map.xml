@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <!--
     <TextView
         android:id="@+id/mapTxt"
         android:layout_width="match_parent"
@@ -13,4 +13,11 @@
         android:textAlignment="center"
         android:textSize="60sp"
         android:textStyle="bold" />
+    -->
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 </FrameLayout>
