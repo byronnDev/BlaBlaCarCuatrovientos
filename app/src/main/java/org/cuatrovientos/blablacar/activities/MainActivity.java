@@ -30,13 +30,15 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Creado el menú de navegación
+        getDataFromLogin();
+        setDefaultHomeSelected();
+
+    }
+
+    private void setDefaultHomeSelected() {
         bottomNav = findViewById(R.id.bottomNavigationView);
         bottomNav.setOnItemSelectedListener(this);
         bottomNav.setSelectedItemId(R.id.home);
-
-        //los distintos activities
-        getDataFromLogin();
     }
 
     private void getDataFromLogin() {
@@ -47,26 +49,49 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.home) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.defaultView, homeView)
-                    .commit();
-            return true;
-        } else if (itemId == R.id.addRoutes) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.defaultView, addRoutesView)
-                    .commit();
-            return true;
-        } else if (itemId == R.id.profile) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.defaultView, profileView)
-                    .commit();
-            return true;
+        if (isHome(itemId)) {
+            setHomeView();
+            return true; // Seleccionar el botón
+        } else if (isAddRoutes(itemId)) {
+            setAddRoutesView();
+            return true; // Seleccionar el botón
+        } else if (isProfile(itemId)) {
+            setProfileView();
+            return true; // Seleccionar el botón
         }
-        // Handle default case
-        return false;
+        return false; // No seleccionar nada
+    }
+
+    private void setProfileView() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.defaultView, profileView)
+                .commit();
+    }
+
+    private void setAddRoutesView() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.defaultView, addRoutesView)
+                .commit();
+    }
+
+    private void setHomeView() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.defaultView, homeView)
+                .commit();
+    }
+
+    private static boolean isProfile(int itemId) {
+        return itemId == R.id.profile;
+    }
+
+    private static boolean isAddRoutes(int itemId) {
+        return itemId == R.id.addRoutes;
+    }
+
+    private static boolean isHome(int itemId) {
+        return itemId == R.id.home;
     }
 }
