@@ -87,6 +87,7 @@
         android:inputType="text"
         android:padding="5dp"
         android:text="@string/cuatrovientos"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/txtStart"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
