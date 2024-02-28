@@ -31,11 +31,10 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         setContentView(R.layout.activity_main);
 
         getDataFromLogin();
-        setDefaultHomeSelected();
-
+        setDefaultHomeSelectedInNav();
     }
 
-    private void setDefaultHomeSelected() {
+    private void setDefaultHomeSelectedInNav() {
         bottomNav = findViewById(R.id.bottomNavigationView);
         bottomNav.setOnItemSelectedListener(this);
         bottomNav.setSelectedItemId(R.id.home);

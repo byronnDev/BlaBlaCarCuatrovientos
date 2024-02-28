@@ -46,20 +46,31 @@ public class Login extends AppCompatActivity {
     }
 
     private void setup() {
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (areValidFields()){
-                    authUserAndAddToDatabase(txtUser.getText().toString(), txtPass.getText().toString());
-                }
-            }
-        });
+        // Botones inicio sesión
+        setRegisterFunction();
+        setLoginFunction();
 
+        // Otras opciones de Inicio de sesión
+
+    }
+
+    private void setLoginFunction() {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (areValidFields()) {
                     authUserWithDatabase(txtUser.getText().toString(), txtPass.getText().toString());
+                }
+            }
+        });
+    }
+
+    private void setRegisterFunction() {
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (areValidFields()){
+                    authUserAndAddToDatabase(txtUser.getText().toString(), txtPass.getText().toString());
                 }
             }
         });

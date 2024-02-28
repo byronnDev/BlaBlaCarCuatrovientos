@@ -113,6 +113,24 @@
         app:layout_constraintVertical_bias="0.174" />
 
     <ImageButton
+        android:id="@+id/appleLogo"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/rounded_corner"
+        android:backgroundTint="@color/black"
+        android:paddingLeft="15dp"
+        android:paddingTop="8dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="15dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.695"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:srcCompat="@drawable/apple" />
+
+    <ImageButton
         android:id="@+id/googleLogo"
         android:layout_width="70dp"
         android:layout_height="70dp"
@@ -121,40 +139,9 @@
         android:padding="10dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.131"
+        app:layout_constraintHorizontal_bias="0.328"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:srcCompat="@drawable/google"/>
-
-    <ImageButton
-        android:id="@+id/facebookLogo"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/rounded_corner"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.865"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:srcCompat="@drawable/facebook" />
-
-    <ImageButton
-        android:id="@+id/appleLogo"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/rounded_corner"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="8dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:srcCompat="@drawable/apple"
-        android:backgroundTint="@color/black"
-        android:paddingBottom="15dp"/>
+        app:srcCompat="@drawable/google" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
