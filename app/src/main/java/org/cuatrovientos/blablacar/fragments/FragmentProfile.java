@@ -38,7 +38,6 @@ public class FragmentProfile extends Fragment {
         email.setText(mail);
 
         btnLogout = (Button) view.findViewById(R.id.btnLogOut);
-
         onLogout();
         return view;
     }

@@ -13,10 +13,20 @@
     <string name="addRoutes">Añadir Rutas</string>
     <string name="profile">Perfil</string>
     <string name="home">Inicio</string>
-    <string name="ubication">Escriba su ubicación...</string>
+    <string name="ubication">Escriba su ubicación…</string>
     <string name="publish_travel">Publicar viaje</string>
     <string name="seats">Asientos</string>
     <string name="cuatrovientos">Cuatrovientos</string>
     <string name="select_your_travel">¡Selecciona tu viaje!</string>
     <string name="help_environment">¿Quieres ayudar al medio ambiente?</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="about">Sobre mí</string>
+    <string name="bio">Biografía</string>
+    <string name="user_information">Información de usuario</string>
+    <string name="username_">Nombre de usuario</string>
+    <string name="gender">Género</string>
+    <string name="age">Edad</string>
+    <string name="date_of_birth">Cumpleaños</string>
+    <string name="mobile">Número de teléfono</string>
+    <string name="email">Correo electrónico</string>
 </resources>
