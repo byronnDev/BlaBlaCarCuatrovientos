@@ -12,12 +12,22 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.cuatrovientos.blablacar.R;
+import org.cuatrovientos.blablacar.models.LogedUser;
+import org.cuatrovientos.blablacar.models.User;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import kotlin.collections.ArrayDeque;
 
 public class Login extends AppCompatActivity {
     Button login;
     Button register;
     EditText txtUser;
     EditText txtPass;
+    List<User> tempUserList = new ArrayList<User>();
+
+    LogedUser logedUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +36,11 @@ public class Login extends AppCompatActivity {
         register = (Button) findViewById(R.id.LoginBtnRegister);
         txtUser = (EditText) findViewById(R.id.LoginTxtUsuario);
         txtPass = (EditText) findViewById(R.id.LoginTxtContrasena);
+        //borrar mas tarde
+        tempUserList.add(new User("usuario1@example.com"));
+        tempUserList.add(new User("usuario2@example.com"));
+        tempUserList.add(new User("usuario3@example.com"));
+        //borrar mas tarde
 
         setup();
     }

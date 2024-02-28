@@ -2,11 +2,13 @@ package org.cuatrovientos.blablacar.models;
 
 public class User {
     private String mail;
-    private String pass;
+    private String userName;
 
-    public User(String mail, String pass) {
+    public User(String mail) {
         this.mail = mail;
-        this.pass = pass;
+        String[] mailPart = mail.split("@");
+        String namePart = mailPart[0];
+        this.userName = namePart;
     }
 
     public String getMail() {
@@ -17,11 +19,11 @@ public class User {
         this.mail = mail;
     }
 
-    public String getPass() {
-        return pass;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
