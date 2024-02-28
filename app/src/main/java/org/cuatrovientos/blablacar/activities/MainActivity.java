@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.fragments.FragmentAddRoutes;
@@ -44,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         Bundle bundle = getIntent().getExtras();
         assert bundle != null;
         email = bundle.getString("email");
+
+        SharedPreferences.Editor preferences = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit();
+        preferences.putString("email", email);
+        preferences.apply();
     }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

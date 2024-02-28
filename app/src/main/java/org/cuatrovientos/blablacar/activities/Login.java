@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.cuatrovientos.blablacar.R;
@@ -51,7 +50,10 @@ public class Login extends AppCompatActivity {
         setLoginFunction();
 
         // Otras opciones de Inicio de sesión
+        SignInWithGoogle();
+    }
 
+    private void SignInWithGoogle() {
     }
 
     private void setLoginFunction() {
