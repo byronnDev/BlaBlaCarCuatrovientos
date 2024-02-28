@@ -13,7 +13,7 @@ public class Route {
         this.id = id;
         this.lugarInicio = lugarInicio;
         this.lugarFin = "42.82434579444012, -1.6598648266999774";
-        this.horaSalida = horaSalida;
+        this.horaSalida = "7:00";
         this.fechaCreacion =  new Date(); //Formato EEE MMM dd HH:mm:ss zzz yyyy
                                             //EEE: Día de la semana abreviado (por ejemplo, "Mon" para lunes).
                                             //MMM: Mes abreviado (por ejemplo, "Jan" para enero).
