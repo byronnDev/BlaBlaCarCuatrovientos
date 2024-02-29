@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.RoutesActivity">
 
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
         android:id="@+id/detailsFragment"
         android:name="org.cuatrovientos.blablacar.fragments.FragmentDetails"
         android:layout_width="match_parent"
