@@ -85,7 +85,6 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 signInWithGoogle();
-                goHome(getEmailFromGoogle());
             }
         });
 
@@ -96,6 +95,7 @@ public class Login extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK) {
                         Intent data = result.getData();
                         handleSignInResult(data);
+                        goHome(getEmailFromGoogle());
                     }
                 }
         );
