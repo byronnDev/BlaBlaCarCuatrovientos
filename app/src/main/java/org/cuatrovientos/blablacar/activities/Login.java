@@ -52,7 +52,6 @@ public class Login extends AppCompatActivity {
         txtUser = (EditText) findViewById(R.id.LoginTxtUsuario);
         txtPass = (EditText) findViewById(R.id.LoginTxtContrasena);
         googleButton = (ImageButton) findViewById(R.id.googleLogo);
-        appleButton = (ImageButton) findViewById(R.id.appleLogo);
 
         //borrar mas tarde
         tempUserList.add(new User("usuario1@example.com"));

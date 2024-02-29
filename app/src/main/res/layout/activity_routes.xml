@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.RoutesActivity">
-<!--
-    <fragment
+
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/detailsFragment"
         android:name="org.cuatrovientos.blablacar.fragments.FragmentDetails"
         android:layout_width="match_parent"
@@ -15,5 +15,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-         tools:layout="@layout/fragment_details"/>     -->
+        tools:layout="@layout/fragment_details"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
