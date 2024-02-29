@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -34,7 +35,7 @@ public class FragmentProfile extends Fragment {
         //el nopmbre del usuario se obtiene del mail por un substring
         nombre = view.findViewById(R.id.txtNombre);
         email = view.findViewById(R.id.txtMail);
-        String mail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        String mail = getEmailFromDatabase();
         assert mail != null;
         nombre.setText(getNameOfMail(mail));
         email.setText(mail);
@@ -42,6 +43,11 @@ public class FragmentProfile extends Fragment {
         btnLogout = (Button) view.findViewById(R.id.btnLogOut);
         onLogout();
         return view;
+    }
+
+    @Nullable
+    private static String getEmailFromDatabase() {
+        return FirebaseAuth.getInstance().getCurrentUser().getEmail();
     }
 
     @NonNull
