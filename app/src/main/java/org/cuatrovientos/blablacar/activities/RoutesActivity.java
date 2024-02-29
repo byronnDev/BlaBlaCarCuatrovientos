@@ -18,7 +18,7 @@ public class RoutesActivity extends FragmentActivity implements FragmentDetails.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_routes);
-        int idContact = getIntent().getIntExtra("id",0);
+        int idRuta = getIntent().getIntExtra("id",0);
         routesList.add(new Route(0,"70.82434579444012, -20.6598648266999774"));
         routesList.add(new Route(1,"30.82434579444012, -4.6598648266999774"));
         routesList.add(new Route(2,"-15.82434579444012, 7.6598648266999774"));
@@ -26,6 +26,8 @@ public class RoutesActivity extends FragmentActivity implements FragmentDetails.
         routesList.add(new Route(4,"-1.82434579444012, 89.6598648266999774"));
         routesList.add(new Route(5,"100.82434579444012, -100.6598648266999774"));
         // si creamos botones, las acciones de estos aqui
+        FragmentDetails detailsFragment = (FragmentDetails) getSupportFragmentManager().findFragmentById(R.id.detailsFragment);
+        detailsFragment.renderData(idRuta);
     }
 
     public void sendData(int idRuta) {
