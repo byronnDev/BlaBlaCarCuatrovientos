@@ -310,6 +310,7 @@
                 android:backgroundTint="@android:color/holo_red_light"
                 android:text="@string/logout" />
         </RelativeLayout>
+
     </LinearLayout>
 
 </ScrollView>

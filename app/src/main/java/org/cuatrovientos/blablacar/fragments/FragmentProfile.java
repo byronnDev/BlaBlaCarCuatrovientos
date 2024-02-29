@@ -3,6 +3,7 @@ package org.cuatrovientos.blablacar.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -34,12 +35,18 @@ public class FragmentProfile extends Fragment {
         nombre = view.findViewById(R.id.txtNombre);
         email = view.findViewById(R.id.txtMail);
         String mail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        nombre.setText(mail.substring(0, mail.indexOf("@")));
+        assert mail != null;
+        nombre.setText(getNameOfMail(mail));
         email.setText(mail);
 
         btnLogout = (Button) view.findViewById(R.id.btnLogOut);
         onLogout();
         return view;
+    }
+
+    @NonNull
+    private static String getNameOfMail(String mail) {
+        return mail.substring(0, mail.indexOf("@"));
     }
 
     private void onLogout() {
