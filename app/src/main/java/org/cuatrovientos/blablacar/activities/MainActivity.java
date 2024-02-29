@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.fragments.FragmentAddRoutes;
+import org.cuatrovientos.blablacar.fragments.FragmentDetails;
 import org.cuatrovientos.blablacar.fragments.FragmentHome;
 import org.cuatrovientos.blablacar.fragments.FragmentMap;
 import org.cuatrovientos.blablacar.fragments.FragmentProfile;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     String email;
     BottomNavigationView bottomNav;
     FragmentHome homeView = new FragmentHome();
+    FragmentDetails detailsView = new FragmentDetails();
     FragmentAddRoutes addRoutesView = new FragmentAddRoutes();
     FragmentProfile profileView = new FragmentProfile();
 
