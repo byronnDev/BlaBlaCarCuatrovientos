@@ -104,7 +104,6 @@ public class Login extends AppCompatActivity {
         // Inicia el proceso de Google Sign-In
         Intent signInIntent = googleClient.getSignInIntent();
         launcher.launch(signInIntent);
-        goHome(getEmailFromGoogle());
     }
 
     private void handleSignInResult(Intent data) {
