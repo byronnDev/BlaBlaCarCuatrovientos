@@ -17,7 +17,7 @@
     <string name="publish_travel">Publicar viaje</string>
     <string name="seats">Asientos</string>
     <string name="cuatrovientos">Cuatrovientos</string>
-    <string name="select_your_travel">¡Selecciona tu viaje!</string>
+    <string name="select_your_travel">¡Publica tu viaje!</string>
     <string name="help_environment">¿Quieres ayudar al medio ambiente?</string>
     <string name="logout">Cerrar sesión</string>
     <string name="about">Sobre mí</string>
@@ -29,4 +29,5 @@
     <string name="date_of_birth">Cumpleaños</string>
     <string name="mobile">Número de teléfono</string>
     <string name="email">Correo electrónico</string>
+    <string name="default_web_client_id">757135302431-in9f3nggjfgg4bu05put96r0ov1ra4s2.apps.googleusercontent.com</string>
 </resources>
