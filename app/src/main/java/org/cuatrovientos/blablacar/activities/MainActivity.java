@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -15,16 +16,19 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.fragments.FragmentAddRoutes;
+import org.cuatrovientos.blablacar.fragments.FragmentDetails;
 import org.cuatrovientos.blablacar.fragments.FragmentHome;
+import org.cuatrovientos.blablacar.fragments.FragmentMap;
 import org.cuatrovientos.blablacar.fragments.FragmentProfile;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView
-        .OnItemSelectedListener {
+        .OnItemSelectedListener, FragmentAddRoutes.DataListener {
     //private MapView mMapView;
     //private MapController mMapController;
     String email;
     BottomNavigationView bottomNav;
     FragmentHome homeView = new FragmentHome();
+    FragmentDetails detailsView = new FragmentDetails();
     FragmentAddRoutes addRoutesView = new FragmentAddRoutes();
     FragmentProfile profileView = new FragmentProfile();
 
@@ -99,5 +103,13 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
 
     private static boolean isHome(int itemId) {
         return itemId == R.id.home;
+    }
+
+
+    @Override
+    public void sendData(int idRuta) {
+        Intent intent = new Intent(MainActivity.this,RoutesActivity.class);
+        intent.putExtra("id",idRuta);
+        startActivity(intent);
     }
 }

@@ -9,7 +9,7 @@ public class Route {
     private String horaSalida;
     private Date fechaCreacion;
 
-    public Route(int id, String lugarInicio, String horaSalida) {
+    public Route(int id, String lugarInicio) {
         this.id = id;
         this.lugarInicio = lugarInicio;
         this.lugarFin = "42.82434579444012, -1.6598648266999774";
