@@ -35,6 +35,7 @@ public class FragmentAddRoutes extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_routes, container, false);
+        routesList.clear();
         routesList.add(new Route(0,"70.82434579444012, -20.6598648266999774"));
         routesList.add(new Route(1,"30.82434579444012, -4.6598648266999774"));
         routesList.add(new Route(2,"-15.82434579444012, 7.6598648266999774"));
