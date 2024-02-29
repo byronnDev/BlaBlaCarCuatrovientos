@@ -14,7 +14,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="50"
-        tools:layout="@layout/fragment_routes" />
+        tools:layout="@layout/fragment_details" />
 
     <fragment
         android:id="@+id/mapFragment"

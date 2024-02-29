@@ -15,5 +15,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_routes" />
+        tools:layout="@layout/fragment_details" />
 </androidx.constraintlayout.widget.ConstraintLayout>
