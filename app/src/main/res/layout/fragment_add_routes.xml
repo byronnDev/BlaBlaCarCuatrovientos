@@ -28,7 +28,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="#00FFFFFF"
-        android:foregroundTint="#B71C1C"
         android:foregroundTintMode="add"
         android:padding="10dp"
         android:scaleType="centerCrop"
@@ -39,6 +38,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/ic_add_routes_foreground" />
+        app:srcCompat="@drawable/ic_add_routes_foreground"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

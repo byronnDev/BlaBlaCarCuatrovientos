@@ -2,6 +2,7 @@ package org.cuatrovientos.blablacar.activities;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,17 +19,24 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.models.LogedUser;
 import org.cuatrovientos.blablacar.models.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class Login extends AppCompatActivity {
     public final int GOOGLE_SIGN_IN = 100;
@@ -57,6 +65,28 @@ public class Login extends AppCompatActivity {
         tempUserList.add(new User("usuario1@example.com"));
         tempUserList.add(new User("usuario2@example.com"));
         tempUserList.add(new User("usuario3@example.com"));
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Map<String, String > usuario = new HashMap<>();
+        usuario.put("nombre", null);
+        usuario.put("correo", "juanperez@ejemplo.com");
+        usuario.put("genero", null);
+        usuario.put("edad", null);
+        usuario.put("cumpleanos", null);
+        usuario.put("telefono", null);
+
+
+
+        /*
+        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+
+                }
+            }
+        });*/
         //borrar mas tarde
 
         setup();

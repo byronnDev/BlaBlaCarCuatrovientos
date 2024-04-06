@@ -23,19 +23,21 @@
         app:srcCompat="@drawable/home_background_with_menu" />
 
     <EditText
-        android:id="@+id/editTextDate"
+        android:id="@+id/etPlannedDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@drawable/rounded_corner"
+        android:clickable="true"
         android:ems="10"
+        android:focusable="false"
         android:hint="Fecha"
         android:inputType="date"
+        android:maxLines="1"
         android:padding="5dp"
-        app:layout_constraintEnd_toEndOf="@+id/txtDestination"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageView3"
-        app:layout_constraintTop_toBottomOf="@+id/txtDestination" />
+        app:layout_constraintEnd_toEndOf="@+id/editTextNumber"
+        app:layout_constraintStart_toStartOf="@+id/editTextNumber"
+        app:layout_constraintTop_toBottomOf="@+id/editTextNumber" />
 
     <ImageView
         android:id="@+id/imageView4"
@@ -98,10 +100,10 @@
         android:layout_width="24dp"
         android:layout_height="34dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/editTextNumber"
+        app:layout_constraintEnd_toStartOf="@+id/etPlannedDate"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6"
         app:srcCompat="@drawable/baseline_date_range_24" />
 
     <EditText
@@ -114,31 +116,30 @@
         android:hint="@string/seats"
         android:inputType="number"
         android:padding="5dp"
-        app:layout_constraintEnd_toEndOf="@+id/editTextDate"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editTextDate"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDate" />
+        app:layout_constraintEnd_toEndOf="@+id/txtDestination"
+        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        app:layout_constraintTop_toBottomOf="@+id/txtDestination" />
 
     <ImageView
         android:id="@+id/imageView6"
         android:layout_width="24dp"
         android:layout_height="34dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/editTextDate"
+        app:layout_constraintEnd_toStartOf="@+id/editTextNumber"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
         app:srcCompat="@drawable/round_airline_seat_recline_normal_24" />
 
     <Button
-        android:id="@+id/btnPublish"
+        android:id="@+id/btnFind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="@string/publish_travel"
-        app:layout_constraintEnd_toEndOf="@+id/txtStart"
-        app:layout_constraintStart_toEndOf="@+id/imageView4"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNumber" />
+        android:layout_marginTop="24dp"
+        android:text="@string/find_travel"
+        app:layout_constraintEnd_toEndOf="@+id/etPlannedDate"
+        app:layout_constraintStart_toStartOf="@+id/etPlannedDate"
+        app:layout_constraintTop_toBottomOf="@+id/etPlannedDate" />
 
     <TextView
         android:id="@+id/txtDondeViajar"
