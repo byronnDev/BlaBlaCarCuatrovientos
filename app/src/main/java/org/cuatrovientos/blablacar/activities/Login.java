@@ -2,7 +2,6 @@ package org.cuatrovientos.blablacar.activities;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,14 +18,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.models.LogedUser;
@@ -36,7 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class Login extends AppCompatActivity {
     public final int GOOGLE_SIGN_IN = 100;
@@ -50,7 +44,6 @@ public class Login extends AppCompatActivity {
 
     LogedUser logedUser;
     ImageButton googleButton;
-    ImageButton appleButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,15 +59,21 @@ public class Login extends AppCompatActivity {
         tempUserList.add(new User("usuario2@example.com"));
         tempUserList.add(new User("usuario3@example.com"));
 
+        setupSignInButtons(); // Configura los botones de inicio de sesión
+
+        /* Ejemplo de como añadir un usuario a la base de datos de Firebase y como obtener los datos de la base de datos */
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        Map<String, String > usuario = new HashMap<>();
-        usuario.put("nombre", null);
-        usuario.put("correo", "juanperez@ejemplo.com");
-        usuario.put("genero", null);
-        usuario.put("edad", null);
-        usuario.put("cumpleanos", null);
-        usuario.put("telefono", null);
+        Map<String, String> usuario = new HashMap<>();
+        usuario.put("name", null);
+        usuario.put("username", null);
+        usuario.put("bio", null);
+        usuario.put("image", null);
+        usuario.put("mail", "juanperez@ejemplo.com");
+        usuario.put("gender", null);
+        usuario.put("birthDate", null);
+        usuario.put("age", null);
+        usuario.put("phone", null);
 
 
 
@@ -89,10 +88,10 @@ public class Login extends AppCompatActivity {
         });*/
         //borrar mas tarde
 
-        setup();
+
     }
 
-    private void setup() {
+    private void setupSignInButtons() {
         // Botones inicio sesión
         setRegisterFunction();
         setLoginFunction();
