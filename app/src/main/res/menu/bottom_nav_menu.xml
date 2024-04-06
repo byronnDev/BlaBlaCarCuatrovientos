@@ -9,6 +9,10 @@
         android:title="@string/addRoutes"
         android:icon="@drawable/ic_add_routes_foreground"/>
     <item
+        android:id="@+id/routesHistory"
+        android:title="@string/routes_history"
+        android:icon="@drawable/baseline_directions_car_24" />
+    <item
         android:id="@+id/profile"
         android:title="@string/profile"
         android:icon="@drawable/ic_profile_foreground"/>

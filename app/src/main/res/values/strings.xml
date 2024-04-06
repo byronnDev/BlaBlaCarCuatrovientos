@@ -10,7 +10,7 @@
     <string name="other_options_text">-- Otras opciones --</string>
     <string name="login_error_message">Error: El usuarios no existe</string>
     <string name="error_user_auth">Error: Se ha producido un error autenticando el usuario</string>
-    <string name="addRoutes">Añadir Rutas</string>
+    <string name="addRoutes">Publicar</string>
     <string name="profile">Perfil</string>
     <string name="home">Inicio</string>
     <string name="ubication">Escriba su ubicación…</string>
@@ -30,4 +30,5 @@
     <string name="mobile">Número de teléfono</string>
     <string name="email">Correo electrónico</string>
     <string name="default_web_client_id">757135302431-in9f3nggjfgg4bu05put96r0ov1ra4s2.apps.googleusercontent.com</string>
+    <string name="routes_history">Tus Viajes</string>
 </resources>

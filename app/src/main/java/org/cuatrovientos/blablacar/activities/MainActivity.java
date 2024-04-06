@@ -20,6 +20,7 @@ import org.cuatrovientos.blablacar.fragments.FragmentDetails;
 import org.cuatrovientos.blablacar.fragments.FragmentHome;
 import org.cuatrovientos.blablacar.fragments.FragmentMap;
 import org.cuatrovientos.blablacar.fragments.FragmentProfile;
+import org.cuatrovientos.blablacar.fragments.FragmentYourRoutes;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView
         .OnItemSelectedListener, FragmentAddRoutes.DataListener {
@@ -28,8 +29,8 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     String email;
     BottomNavigationView bottomNav;
     FragmentHome homeView = new FragmentHome();
-    FragmentDetails detailsView = new FragmentDetails();
     FragmentAddRoutes addRoutesView = new FragmentAddRoutes();
+    FragmentYourRoutes yourRoutesView = new FragmentYourRoutes();
     FragmentProfile profileView = new FragmentProfile();
 
     @Override
@@ -65,13 +66,15 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         } else if (isAddRoutes(itemId)) {
             setAddRoutesView();
             return true; // Seleccionar el botón
+        } else if (isYourRoutesView(itemId)) {
+            setYourRoutesView();
+            return true; // Seleccionar el botón
         } else if (isProfile(itemId)) {
             setProfileView();
             return true; // Seleccionar el botón
         }
         return false; // No seleccionar nada
     }
-
     private void setProfileView() {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -83,6 +86,13 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.defaultView, addRoutesView)
+                .commit();
+    }
+
+    private void setYourRoutesView() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.defaultView, yourRoutesView)
                 .commit();
     }
 
@@ -100,6 +110,9 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     private static boolean isAddRoutes(int itemId) {
         return itemId == R.id.addRoutes;
     }
+
+    private static boolean isYourRoutesView(int itemId) { return itemId == R.id.routesHistory; }
+
 
     private static boolean isHome(int itemId) {
         return itemId == R.id.home;
