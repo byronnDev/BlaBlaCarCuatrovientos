@@ -14,16 +14,23 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.activities.Login;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FragmentProfile extends Fragment {
     Button btnLogout;
     private TextView nombre;
     private TextView email;
+    FirebaseFirestore db;
+    Map<String, Object> user = new HashMap<>();
     public FragmentProfile() {
         // Required empty public constructor
+        db = FirebaseFirestore.getInstance();
     }
 
 
@@ -37,6 +44,7 @@ public class FragmentProfile extends Fragment {
         email = view.findViewById(R.id.txtMail);
         String mail = getEmailFromDatabase();
         assert mail != null;
+
         nombre.setText(getNameOfMail(mail));
         email.setText(mail);
 

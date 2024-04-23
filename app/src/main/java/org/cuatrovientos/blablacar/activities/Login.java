@@ -28,12 +28,13 @@ import org.cuatrovientos.blablacar.models.LogedUser;
 import org.cuatrovientos.blablacar.models.User;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Login extends AppCompatActivity {
-    public final int GOOGLE_SIGN_IN = 100;
     private ActivityResultLauncher<Intent> launcher;
     private GoogleSignInClient googleClient;
     Button login;
@@ -41,6 +42,8 @@ public class Login extends AppCompatActivity {
     EditText txtUser;
     EditText txtPass;
     List<User> tempUserList = new ArrayList<User>();
+    /* Ejemplo de como añadir un usuario a la base de datos de Firebase y como obtener los datos de la base de datos */
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     LogedUser logedUser;
     ImageButton googleButton;
@@ -61,21 +64,22 @@ public class Login extends AppCompatActivity {
 
         setupSignInButtons(); // Configura los botones de inicio de sesión
 
-        /* Ejemplo de como añadir un usuario a la base de datos de Firebase y como obtener los datos de la base de datos */
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        Map<String, String> usuario = new HashMap<>();
+        /* Añadir un usuario a la base de datos
+        Map<String, Object> usuario = new HashMap<>();
         usuario.put("name", null);
         usuario.put("username", null);
         usuario.put("bio", null);
         usuario.put("image", null);
-        usuario.put("mail", "juanperez@ejemplo.com");
+        usuario.put("mail", null);
         usuario.put("gender", null);
-        usuario.put("birthDate", null);
         usuario.put("age", null);
         usuario.put("phone", null);
+        usuario.put("birthDate", new Date());
 
+        // Primero crea la tabla usuarios si no existe, sino mete los datos usando mail como clave
+        db.collection("users").document("mail").set(usuario);
 
+        */
 
         /*
         db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -87,7 +91,6 @@ public class Login extends AppCompatActivity {
             }
         });*/
         //borrar mas tarde
-
 
     }
 

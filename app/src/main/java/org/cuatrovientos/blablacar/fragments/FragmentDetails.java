@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Polyline;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import android.widget.TextView;
 
 import org.cuatrovientos.blablacar.R;
@@ -26,8 +28,10 @@ public class FragmentDetails extends Fragment {
     RecyclerView recyclerRutas;
     TextView test;
     List<Route> routesList = new ArrayList<Route>();
+    FirebaseFirestore db;
     public FragmentDetails() {
         // Required empty public constructor
+        db = FirebaseFirestore.getInstance();
     }
 
     @Override
