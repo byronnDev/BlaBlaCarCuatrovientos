@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.fragments.FragmentAddRoutes;
@@ -21,6 +22,10 @@ import org.cuatrovientos.blablacar.fragments.FragmentHome;
 import org.cuatrovientos.blablacar.fragments.FragmentMap;
 import org.cuatrovientos.blablacar.fragments.FragmentProfile;
 import org.cuatrovientos.blablacar.fragments.FragmentYourRoutes;
+import org.cuatrovientos.blablacar.models.Route;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView
         .OnItemSelectedListener, FragmentAddRoutes.DataListener {
@@ -32,13 +37,14 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     FragmentAddRoutes addRoutesView = new FragmentAddRoutes();
     FragmentYourRoutes yourRoutesView = new FragmentYourRoutes();
     FragmentProfile profileView = new FragmentProfile();
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        db = FirebaseFirestore.getInstance(); // Inicializar Firestore
 
-        getDataFromLogin();
         setDefaultHomeSelectedInNav();
     }
 
@@ -48,15 +54,10 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         bottomNav.setSelectedItemId(R.id.home);
     }
 
-    private void getDataFromLogin() {
-        Bundle bundle = getIntent().getExtras();
-        assert bundle != null;
-        email = bundle.getString("email");
-
-        SharedPreferences.Editor preferences = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit();
-        preferences.putString("email", email);
-        preferences.apply();
+    private boolean isGoogleUser() {
+        return FirebaseAuth.getInstance().getCurrentUser().getProviderId().equals("google.com");
     }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
