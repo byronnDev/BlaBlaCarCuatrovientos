@@ -42,11 +42,10 @@ public class FragmentProfile extends Fragment {
         //el nopmbre del usuario se obtiene del mail por un substring
         nombre = view.findViewById(R.id.txtNombre);
         email = view.findViewById(R.id.txtMail);
-        String mail = getEmailFromDatabase();
-        assert mail != null;
 
-        nombre.setText(getNameOfMail(mail));
-        email.setText(mail);
+        String dbMail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        nombre.setText(dbMail.substring(0, dbMail.indexOf("@")));
+        email.setText(dbMail);
 
         btnLogout = (Button) view.findViewById(R.id.btnLogOut);
         onLogout();
@@ -56,11 +55,6 @@ public class FragmentProfile extends Fragment {
     @Nullable
     private static String getEmailFromDatabase() {
         return FirebaseAuth.getInstance().getCurrentUser().getEmail();
-    }
-
-    @NonNull
-    private static String getNameOfMail(String mail) {
-        return mail.substring(0, mail.indexOf("@"));
     }
 
     private void onLogout() {
