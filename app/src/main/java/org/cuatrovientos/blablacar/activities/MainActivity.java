@@ -125,4 +125,10 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         intent.putExtra("id",idRuta);
         startActivity(intent);
     }
+
+    @Override
+    public void addRoute() {
+        Intent intent = new Intent(MainActivity.this,AddRouteActivity.class);
+        startActivity(intent);
+    }
 }

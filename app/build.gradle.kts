@@ -30,6 +30,9 @@ android {
 }
 
 dependencies {
+    //open openrouteservice
+    //implementation("org.heigit.ors:openrouteservice-api:1.0.0")
+    //end openrouteservice
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
@@ -39,6 +42,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
     //implementacion de retrofit
+
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.google.firebase:firebase-firestore:24.10.2")
