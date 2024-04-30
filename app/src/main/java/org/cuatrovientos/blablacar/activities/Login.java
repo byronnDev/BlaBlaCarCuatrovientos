@@ -36,17 +36,12 @@ import java.util.Objects;
 
 public class Login extends AppCompatActivity {
     private ActivityResultLauncher<Intent> launcher;
-    private GoogleSignInClient googleClient;
     Button login;
     Button register;
     EditText txtUser;
     EditText txtPass;
     List<User> tempUserList = new ArrayList<User>();
-    /* Ejemplo de como añadir un usuario a la base de datos de Firebase y como obtener los datos de la base de datos */
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     LogedUser logedUser;
-    ImageButton googleButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +50,6 @@ public class Login extends AppCompatActivity {
         register = (Button) findViewById(R.id.LoginBtnRegister);
         txtUser = (EditText) findViewById(R.id.LoginTxtUsuario);
         txtPass = (EditText) findViewById(R.id.LoginTxtContrasena);
-        googleButton = (ImageButton) findViewById(R.id.googleLogo);
 
         //borrar mas tarde
         tempUserList.add(new User("usuario1@example.com"));
@@ -98,71 +92,6 @@ public class Login extends AppCompatActivity {
         // Botones inicio sesión
         setRegisterFunction();
         setLoginFunction();
-
-        // Otras opciones de Inicio de sesión
-        onSignInWithGoogle();
-    }
-
-    private void onSignInWithGoogle() {
-        // Inicializa GoogleSignInClient
-        GoogleSignInOptions googleConfiguration = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        googleClient = GoogleSignIn.getClient(getApplicationContext(), googleConfiguration);
-
-        // Configura el botón de Google Sign-In
-        googleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signInWithGoogle();
-            }
-        });
-
-        // Registra el launcher para manejar el resultado de la actividad de Google Sign-In
-        launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        handleSignInResult(data);
-                    }
-                }
-        );
-    }
-
-    private void signInWithGoogle() {
-        // Inicia el proceso de Google Sign-In
-        Intent signInIntent = googleClient.getSignInIntent();
-        launcher.launch(signInIntent);
-    }
-
-    private void handleSignInResult(Intent data) {
-        try {
-            // Obtiene la cuenta de Google
-            GoogleSignInAccount account = GoogleSignIn.getSignedInAccountFromIntent(data).getResult(ApiException.class);
-
-            if (account != null) {
-                // Obtiene el token de ID y autentica al usuario
-                AuthCredential credentials = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-                FirebaseAuth.getInstance().signInWithCredential(credentials).addOnCompleteListener(command -> {
-                    if (command.isSuccessful()) {
-                        // El inicio de sesión fue exitoso
-                        goHome(getEmailFromGoogle());
-                    } else {
-                        // Mostrar alerta en caso de error
-                        showAlert();
-                    }
-                });
-            }
-        } catch (ApiException e) {
-            showAlert();
-        }
-    }
-
-    @Nullable
-    private String getEmailFromGoogle() {
-        return GoogleSignIn.getLastSignedInAccount(getApplicationContext()).getEmail();
     }
 
     private void setLoginFunction() {
@@ -191,7 +120,6 @@ public class Login extends AppCompatActivity {
         FirebaseAuth.getInstance()
                 .signInWithEmailAndPassword(user, pass).addOnCompleteListener(command -> {
             if (command.isSuccessful()) {
-                logedUser.setLogedUser(new User(user));
                 goHome(txtUser.getText().toString());
             } else {
                 showAlert();
@@ -216,18 +144,10 @@ public class Login extends AppCompatActivity {
 
     private void goHome(String email) {
         Intent intent = new Intent(Login.this, MainActivity.class);
-
-        intent.putExtra("email", email);
         // Start the new activity
         startActivity(intent);
         // Finish the current activity
         finish();
-    }
-
-    private class GoogleProvider {
-        public GoogleProvider() {
-
-        }
     }
 
     private void showAlert() {
