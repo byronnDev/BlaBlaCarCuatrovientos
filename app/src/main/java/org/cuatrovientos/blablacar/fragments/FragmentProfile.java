@@ -15,9 +15,11 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.activities.Login;
+import org.cuatrovientos.blablacar.utils.dbQuery;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,18 +45,23 @@ public class FragmentProfile extends Fragment {
         nombre = view.findViewById(R.id.txtNombre);
         email = view.findViewById(R.id.txtMail);
 
-        String dbMail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        nombre.setText(dbMail.substring(0, dbMail.indexOf("@")));
+        // Se obtiene el usuario de la base de datos
+        dbQuery dbQuery = new dbQuery(requireContext());
+        String dbMail = dbQuery.getCurrentUserEmail();
+
         email.setText(dbMail);
+        db.collection("users").document(dbMail)
+                .get().addOnSuccessListener(v -> {
+                    if (v.exists()) {
+                        user = v.getData();
+                        nombre.setText(user.get("name").toString());
+                    }
+                });
+
 
         btnLogout = (Button) view.findViewById(R.id.btnLogOut);
         onLogout();
         return view;
-    }
-
-    @Nullable
-    private static String getEmailFromDatabase() {
-        return FirebaseAuth.getInstance().getCurrentUser().getEmail();
     }
 
     private void onLogout() {
