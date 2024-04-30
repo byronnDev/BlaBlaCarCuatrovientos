@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.adapters.RecyclerDataAdapter;
@@ -26,7 +27,7 @@ public class FragmentAddRoutes extends Fragment {
     List<Route> routesList = new ArrayList<Route>();
     RecyclerView recyclerView;
     DataListener callback;
-    Button btnAddRoute;
+    ImageButton btnAddRoute;
 
     public FragmentAddRoutes() {
         // Required empty public constructor
@@ -45,7 +46,8 @@ public class FragmentAddRoutes extends Fragment {
         routesList.add(new Route(4,"-1.82434579444012, 89.6598648266999774"));
         routesList.add(new Route(5,"100.82434579444012, -100.6598648266999774"));
 
-        this.btnAddRoute = view.findViewById(R.id.btnAddRoute);
+
+        this.btnAddRoute = (ImageButton) view.findViewById(R.id.btnAddRoute);
 
         this.recyclerView = (RecyclerView) view.findViewById(R.id.recyclerRutas);
         RecyclerDataAdapter routesAdapter = new RecyclerDataAdapter(routesList, new RecyclerDataAdapter.OnItemClickListener() {

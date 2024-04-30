@@ -21,12 +21,13 @@
         app:layout_constraintVertical_bias="0.023" />
 
     <EditText
-        android:id="@+id/editTextText3"
+        android:id="@+id/editTextcalle"
         android:layout_width="389dp"
         android:layout_height="40dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Calle"
+        android:text=""
+        android:hint="Calle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,12 +35,13 @@
         app:layout_constraintVertical_bias="0.312" />
 
     <EditText
-        android:id="@+id/editTextText5"
+        android:id="@+id/editTextNCalle"
         android:layout_width="101dp"
         android:layout_height="49dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Nº calle"
+        android:text=""
+        android:hint="Nº calle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.035"
@@ -48,12 +50,13 @@
         app:layout_constraintVertical_bias="0.391" />
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/editTextHuecos"
         android:layout_width="98dp"
         android:layout_height="43dp"
         android:ems="10"
         android:inputType="number"
-        android:text="Nº huecos"
+        android:text=""
+        android:hint="Nº Huecos"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.035"
@@ -62,7 +65,7 @@
         app:layout_constraintVertical_bias="0.476" />
 
     <ImageButton
-        android:id="@+id/btnAddRoute"
+        android:id="@+id/btnAddInnerRoute"
         android:layout_width="235dp"
         android:layout_height="189dp"
         android:layout_margin="0dp"
@@ -83,7 +86,7 @@
         tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tipo de ruta"
@@ -98,7 +101,7 @@
         android:id="@+id/textoTipoRuta"
         android:layout_width="204dp"
         android:layout_height="25dp"
-        android:text="texto de tipo ruta"
+        android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.71"
