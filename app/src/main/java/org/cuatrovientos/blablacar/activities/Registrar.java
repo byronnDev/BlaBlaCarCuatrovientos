@@ -19,7 +19,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.cuatrovientos.blablacar.R;
+import org.cuatrovientos.blablacar.models.Route;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -132,6 +134,9 @@ public class Registrar extends AppCompatActivity {
         user.put("surname", txtSurname.getText().toString());
         user.put("mail", txtMail.getText().toString());
         user.put("phone", txtPhone.getText().toString());
+        // Start with 0 O2 points and an empty list of routes
+        user.put("O2Points", 0);
+        user.put("Routes", new ArrayList<Route>());
 
         db.collection("users").document(txtMail.getText().toString()).set(user)
                 .addOnFailureListener(new OnFailureListener() {
