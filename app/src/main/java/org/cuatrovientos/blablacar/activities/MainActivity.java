@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         .OnItemSelectedListener, FragmentAddRoutes.DataListener {
     //private MapView mMapView;
     //private MapController mMapController;
-    String email;
     BottomNavigationView bottomNav;
     FragmentHome homeView = new FragmentHome();
     FragmentAddRoutes addRoutesView = new FragmentAddRoutes();

@@ -7,7 +7,7 @@
     tools:context=".activities.Login">
 
     <TextView
-        android:id="@+id/LoginLblAppname"
+        android:id="@+id/lblTItle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
@@ -23,13 +23,13 @@
         android:layout_width="137dp"
         android:layout_height="135dp"
         android:layout_marginTop="28dp"
-        app:layout_constraintEnd_toEndOf="@+id/LoginLblAppname"
-        app:layout_constraintStart_toStartOf="@+id/LoginLblAppname"
-        app:layout_constraintTop_toBottomOf="@+id/LoginLblAppname"
+        app:layout_constraintEnd_toEndOf="@+id/lblTItle"
+        app:layout_constraintStart_toStartOf="@+id/lblTItle"
+        app:layout_constraintTop_toBottomOf="@+id/lblTItle"
         app:srcCompat="@drawable/logo" />
 
     <EditText
-        android:id="@+id/LoginTxtContrasena"
+        android:id="@+id/txtPass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -66,7 +66,7 @@
         app:layout_constraintTop_toBottomOf="@+id/LoginLblUsuario" />
 
     <EditText
-        android:id="@+id/LoginTxtUsuario"
+        android:id="@+id/txtMail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
@@ -79,7 +79,7 @@
         app:layout_constraintVertical_bias="0.277" />
 
     <Button
-        android:id="@+id/LoginBtnRegister"
+        android:id="@+id/btnRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"

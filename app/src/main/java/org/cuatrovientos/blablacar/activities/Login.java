@@ -13,10 +13,6 @@ import android.widget.EditText;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.cuatrovientos.blablacar.R;
-import org.cuatrovientos.blablacar.models.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Login extends AppCompatActivity {
     private ActivityResultLauncher<Intent> launcher;
@@ -29,9 +25,9 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         login = (Button) findViewById(R.id.LoginBtnLogin);
-        register = (Button) findViewById(R.id.LoginBtnRegister);
-        txtUser = (EditText) findViewById(R.id.LoginTxtUsuario);
-        txtPass = (EditText) findViewById(R.id.LoginTxtContrasena);
+        register = (Button) findViewById(R.id.btnRegister);
+        txtUser = (EditText) findViewById(R.id.txtMail);
+        txtPass = (EditText) findViewById(R.id.txtPass);
 
         setupSignInButtons(); // Configura los botones de inicio de sesión
 
@@ -86,9 +82,12 @@ public class Login extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (areValidFields()){
-                    authUserAndAddToDatabase(txtUser.getText().toString(), txtPass.getText().toString());
-                }
+                Intent intent = new Intent(Login.this, Registrar.class);
+                startActivity(intent);
+                finish();
+//                if (areValidFields()){
+//                    authUserAndAddToDatabase(txtUser.getText().toString(), txtPass.getText().toString());
+//                }
             }
         });
     }
