@@ -30,35 +30,6 @@ public class Login extends AppCompatActivity {
         txtPass = (EditText) findViewById(R.id.txtPass);
 
         setupSignInButtons(); // Configura los botones de inicio de sesión
-
-        /* Añadir un usuario a la base de datos
-        Map<String, Object> usuario = new HashMap<>();
-        usuario.put("name", null);
-        usuario.put("username", null);
-        usuario.put("bio", null);
-        usuario.put("image", null);
-        usuario.put("mail", null);
-        usuario.put("gender", null);
-        usuario.put("age", null);
-        usuario.put("phone", null);
-        usuario.put("birthDate", new Date());
-
-        // Primero crea la tabla usuarios si no existe, sino mete los datos usando mail como clave
-        db.collection("users").document("mail").set(usuario);
-
-        */
-
-        /*
-        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()){
-
-                }
-            }
-        });*/
-        //borrar mas tarde
-
     }
 
     private void setupSignInButtons() {
