@@ -1,8 +1,6 @@
 package org.cuatrovientos.blablacar.activities;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,28 +9,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.cuatrovientos.blablacar.R;
-import org.cuatrovientos.blablacar.models.LogedUser;
 import org.cuatrovientos.blablacar.models.User;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class Login extends AppCompatActivity {
     private ActivityResultLauncher<Intent> launcher;
@@ -40,8 +24,6 @@ public class Login extends AppCompatActivity {
     Button register;
     EditText txtUser;
     EditText txtPass;
-    List<User> tempUserList = new ArrayList<User>();
-    LogedUser logedUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +32,6 @@ public class Login extends AppCompatActivity {
         register = (Button) findViewById(R.id.LoginBtnRegister);
         txtUser = (EditText) findViewById(R.id.LoginTxtUsuario);
         txtPass = (EditText) findViewById(R.id.LoginTxtContrasena);
-
-        //borrar mas tarde
-        tempUserList.add(new User("usuario1@example.com"));
-        tempUserList.add(new User("usuario2@example.com"));
-        tempUserList.add(new User("usuario3@example.com"));
 
         setupSignInButtons(); // Configura los botones de inicio de sesión
 
