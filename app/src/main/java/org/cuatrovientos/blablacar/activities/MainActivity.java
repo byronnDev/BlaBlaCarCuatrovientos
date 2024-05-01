@@ -53,10 +53,6 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         bottomNav.setSelectedItemId(R.id.home);
     }
 
-    private boolean isGoogleUser() {
-        return FirebaseAuth.getInstance().getCurrentUser().getProviderId().equals("google.com");
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
