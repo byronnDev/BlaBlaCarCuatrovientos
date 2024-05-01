@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import org.cuatrovientos.blablacar.R;
 
@@ -19,7 +20,7 @@ import java.util.Calendar;
 
 public class FragmentHome extends Fragment {
     EditText etPlannedDate;
-
+    Switch switchTipoRuta;
     public FragmentHome() {
     }
 
@@ -29,7 +30,8 @@ public class FragmentHome extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         etPlannedDate = (EditText) view.findViewById(R.id.etPlannedDate);
-
+        switchTipoRuta = (Switch) view.findViewById(R.id.switch1);
+        //cuando cambiamos el tipo de ruta cambia los campos
         // Define click listener for etPlannedDate
         etPlannedDate.setOnClickListener(new View.OnClickListener() {
             @Override

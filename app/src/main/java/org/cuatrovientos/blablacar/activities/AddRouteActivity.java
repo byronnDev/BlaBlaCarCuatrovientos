@@ -19,7 +19,8 @@ public class AddRouteActivity extends AppCompatActivity {
     EditText editTextNCalle;
     EditText editTextHuecos;
     TextView textViewTipoRuta;
-    ImageButton btnAddRoute;
+    ImageButton btnAddInnerRoute;
+    Button btnGoHome;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +30,7 @@ public class AddRouteActivity extends AppCompatActivity {
         editTextNCalle = findViewById(R.id.editTextNCalle);
         editTextHuecos = findViewById(R.id.editTextHuecos);
         textViewTipoRuta = findViewById(R.id.textoTipoRuta);
-        btnAddRoute = findViewById(R.id.btnAddInnerRoute);
+        btnAddInnerRoute = findViewById(R.id.btnAddInnerRoute);
         //cuando cambiamos el tipo de ruata el texto de la etiqueta cambia
         switchTipoRuta.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -39,9 +40,14 @@ public class AddRouteActivity extends AppCompatActivity {
             }
         });
         //cuando pulsamos el boton de añadir ruta se añade la ruta
-        btnAddRoute.setOnClickListener(v -> {
+        btnAddInnerRoute.setOnClickListener(v -> {
             //TODO
             //crear un objeto de tipo Ruta y construirlo, luego el resto de la logica de la clase
+        });
+        //cuando pulsamos el boton de ir a inicio volvemos a la pantalla de inicio
+        btnGoHome = findViewById(R.id.buttonHome);
+        btnGoHome.setOnClickListener(v -> {
+            finish();
         });
 
 
