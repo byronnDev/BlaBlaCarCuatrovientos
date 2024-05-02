@@ -14,7 +14,10 @@ public class Route {
     private ArrayList<User> usuariosApuntados;
     private ArrayList<User> usuariosBaneados;
 
-    public Route(int id, String lugarInicio, String lugarFin, String horaSalida,int huecos, User usuarioPropietario) {
+    public Route() {
+    }
+
+    public Route(int id, String lugarInicio, String lugarFin, String horaSalida, int huecos, User usuarioPropietario) {
         this.id_ruta = id;
         this.lugarInicio = lugarInicio;
         this.lugarFin = lugarFin;
