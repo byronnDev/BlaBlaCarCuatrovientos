@@ -59,7 +59,7 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
         }
 
         public void assignData(Route contenido, OnItemClickListener onItemClickListener){
-            String rutasId = String.valueOf(contenido.getId());
+            String rutasId = String.valueOf(contenido.getId_ruta());
             rutasId = "Ruta " + rutasId;
 
 
