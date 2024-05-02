@@ -1,7 +1,18 @@
 package org.cuatrovientos.blablacar.models;
 
+import static android.content.ContentValues.TAG;
+
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Date;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Route {
     private int id_ruta;
@@ -13,6 +24,7 @@ public class Route {
     private User propietoario;
     private ArrayList<User> usuariosApuntados;
     private ArrayList<User> usuariosBaneados;
+    private FirebaseFirestore db;
 
     public Route() {
     }
@@ -55,6 +67,27 @@ public class Route {
         this.huecos = huecos;
         this.usuariosApuntados = new ArrayList<User>();
         this.usuariosBaneados = new ArrayList<User>();
+
+
+    }
+
+    public void insertToDatabase(){
+        db = FirebaseFirestore.getInstance();
+        CollectionReference routesRef = db.collection("routes");
+        // Añadir la ruta a la colección "routes"
+        routesRef.add(this)
+        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if (task.isSuccessful()) {
+                    // La operación se realizó con éxito
+                    Log.d(TAG, "Ruta añadida correctamente con ID: " + task.getResult().getId());
+                } else {
+                    // Hubo un error al agregar la ruta
+                    Log.w(TAG, "Error al añadir ruta", task.getException());
+                }
+            }
+        });
     }
 
     public int getId_ruta() {
