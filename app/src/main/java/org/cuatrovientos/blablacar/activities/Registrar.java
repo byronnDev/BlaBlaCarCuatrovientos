@@ -137,6 +137,8 @@ public class Registrar extends AppCompatActivity {
         // Start with 0 O2 points and an empty list of routes
         user.put("O2Points", 0);
         user.put("Routes", new ArrayList<Route>());
+        user.put("routesSubscribed", new ArrayList<Route>());
+        user.put("routesBaned", new ArrayList<Route>());
 
         db.collection("users").document(txtMail.getText().toString()).set(user)
                 .addOnFailureListener(new OnFailureListener() {
