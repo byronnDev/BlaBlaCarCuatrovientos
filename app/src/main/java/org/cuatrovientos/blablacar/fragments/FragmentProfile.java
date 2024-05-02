@@ -1,42 +1,51 @@
 package org.cuatrovientos.blablacar.fragments;
 
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.provider.MediaStore;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.activities.Login;
-import org.cuatrovientos.blablacar.utils.dbQuery;
 
-import java.util.HashMap;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Map;
 
 public class FragmentProfile extends Fragment {
-    Button btnLogout;
+    private Button btnLogout;
     private TextView nombre;
     private TextView email;
     private ImageView imgUsuario;
-    private static final int PICK_IMAGE_REQUEST = 1;
     private TextView o2Points;
 
-    FirebaseFirestore db;
-    Map<String, Object> user = new HashMap<>();
+    private FirebaseFirestore db;
+
     public FragmentProfile() {
         // Required empty public constructor
         db = FirebaseFirestore.getInstance();
@@ -45,47 +54,125 @@ public class FragmentProfile extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        //el nopmbre del usuario se obtiene del mail por un substring
+
+        // Initialize views
         nombre = view.findViewById(R.id.txtNombre);
         email = view.findViewById(R.id.txtMail);
         imgUsuario = view.findViewById(R.id.imgUsuario);
         o2Points = view.findViewById(R.id.txtO2Points);
+        btnLogout = view.findViewById(R.id.btnLogOut);
 
-        // TODO No está pillando los datos del usuario ni actualizándo la imagen
-        db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail())
-                .get().addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        user = documentSnapshot.getData();
-                        if (user != null) {
-                            email.setText(user.containsKey("mail") ? user.get("mail").toString() : "");
-                            String nombreYApellido = (user.containsKey("name") ? user.get("name").toString() : "") + " " +
-                                    (user.containsKey("surname") ? user.get("surname").toString() : "");
-                            nombre.setText(nombreYApellido);
-                            if (user.containsKey("picture")) {
-                                String imgUrl = user.get("picture").toString();
-                                if (imgUrl != null) {
-                                    imgUsuario.setImageURI(Uri.parse(imgUrl));
-                                }
-                            }
-                            o2Points.setText(user.containsKey("o2Points") ? user.get("o2Points").toString() : "");
-                        }
-                    }
-                });
+        // Load user data
+        cargarDatosUsuario();
+
+        // Handle logout button click
+        onLogout();
+
+        // Handle image click to select a new image
         imgUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Intent para abrir la galería de imágenes
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent, "Selecciona una imagen"), PICK_IMAGE_REQUEST);
+                abrirSelectorImagen();
             }
+            private void abrirSelectorImagen() {
+                imagePickerLauncher.launch("image/*");
+            }
+
+            // Declare an ActivityResultLauncher for image selection
+            ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
+                    new ActivityResultContracts.GetContent(),
+                    uri -> {
+                        if (uri != null) {
+                            // Handle the selected image URI here
+                            imgUsuario.setImageURI(uri);
+                            imgUsuario.setClipToOutline(true);
+                            imgUsuario.setBackgroundResource(R.drawable.rounded_corner);
+                            // Ajustar la escala de la imagen para que ocupe todo el espacio dentro del ImageView
+                            imgUsuario.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                            // Guardamos la url de la imagen en la bbdd en el usuario actual
+                            db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).update("picture", uri);
+                        }
+                    }
+            );
         });
 
-        btnLogout = (Button) view.findViewById(R.id.btnLogOut);
-        onLogout();
         return view;
+    }
+
+    private void cargarDatosUsuario() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String mail = currentUser.getEmail();
+            obtenerDatosUsuario(mail);
+        } else {
+            mostrarMensajeError("No hay una sesión activa");
+        }
+    }
+
+    private void obtenerDatosUsuario(String mail) {
+        CollectionReference usersRef = db.collection("users");
+        usersRef.document(mail).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    Map<String, Object> userData = documentSnapshot.getData();
+                    actualizarInterfazUsuario(userData);
+                } else {
+                    mostrarMensajeError("No se encontraron datos del usuario");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                mostrarMensajeError("Error al obtener datos del usuario");
+            }
+        });
+    }
+
+    private void actualizarInterfazUsuario(Map<String, Object> userData) {
+        // Update user interface with user data
+        email.setText(getStringFromMap(userData, "mail"));
+        String nombreYApellido = getStringFromMap(userData, "name") + " " + getStringFromMap(userData, "surname");
+        nombre.setText(nombreYApellido);
+
+        String imgUrl = getStringFromMap(userData, "picture");
+        Bitmap bitmap = getBitmapFromURL(imgUrl);
+        if (bitmap != null) {
+            imgUsuario.setImageBitmap(bitmap);
+        }
+
+        String o2PointsText = getStringFromMap(userData, "o2Points");
+        if (!o2PointsText.isEmpty()) {
+            o2Points.setText(o2PointsText);
+        }
+    }
+
+    private String getStringFromMap(Map<String, Object> map, String key) {
+        return map.containsKey(key) ? map.get(key).toString() : "";
+    }
+
+    private void mostrarMensajeError(String mensaje) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private Bitmap getBitmapFromURL(String url) {
+        try {
+            URL imageUrl = new URL(url);
+            HttpURLConnection connection = (HttpURLConnection) imageUrl.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            return BitmapFactory.decodeStream(input);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     private void onLogout() {
@@ -101,12 +188,5 @@ public class FragmentProfile extends Fragment {
     private void returnLoginActivity() {
         Intent intent = new Intent(requireContext(), Login.class);
         startActivity(intent);
-    }
-
-    public void renderData() {
-        //TODO
-        //crear un objeto de tipo Ruta y construirlo, luego el resto de la logica de la clase
-
-
     }
 }
