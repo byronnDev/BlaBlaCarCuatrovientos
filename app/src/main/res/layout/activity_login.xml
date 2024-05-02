@@ -35,7 +35,7 @@
         android:layout_marginStart="12dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="123456"
+        android:text="aA123456!"
         app:layout_constraintBottom_toBottomOf="@+id/LoginLblContraseña"
         app:layout_constraintStart_toEndOf="@+id/LoginLblContraseña"
         app:layout_constraintTop_toTopOf="@+id/LoginLblContraseña"
@@ -96,7 +96,7 @@
         android:layout_marginTop="36dp"
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.275"
+        app:layout_constraintHorizontal_bias="0.161"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/LoginLblContraseña" />
 
