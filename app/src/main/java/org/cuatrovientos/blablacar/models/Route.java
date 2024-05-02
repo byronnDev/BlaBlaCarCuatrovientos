@@ -38,7 +38,7 @@ public class Route {
     }
 
     public Route(String lugarInicio, String lugarFin, String horaSalida, int huecos, User usuarioPropietario) {
-
+        this.id_ruta = 0;
         this.lugarInicio = lugarInicio;
         this.lugarFin = lugarFin;
         this.horaSalida = horaSalida;
