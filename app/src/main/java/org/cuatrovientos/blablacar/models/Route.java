@@ -8,6 +8,7 @@ public class Route {
     private String lugarFin;
     private String horaSalida;
     private Date fechaCreacion;
+    private int huecos;
 
     public Route(int id, String lugarInicio) {
         this.id = id;
@@ -23,6 +24,15 @@ public class Route {
                                             //ss: Segundo.
                                             //zzz: Zona horaria.
                                             //yyyy: Año.
+
+    }
+    public Route(int id, String lugarInicio, String lugarFin, String horaSalida, int huecos) {
+        this.id = id;
+        this.lugarInicio = lugarInicio;
+        this.lugarFin = lugarFin;
+        this.horaSalida = horaSalida;
+        this.huecos = huecos;
+        this.fechaCreacion = new Date();
     }
 
     public int getId() {
@@ -32,6 +42,11 @@ public class Route {
     public void setId(int id) {
         this.id = id;
     }
+    public int getHuecos() {
+        return huecos;
+    }
+
+
 
     public String getLugarInicio() {
         return lugarInicio;

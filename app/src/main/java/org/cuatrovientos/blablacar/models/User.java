@@ -1,6 +1,9 @@
 package org.cuatrovientos.blablacar.models;
 
-public class User {
+public class
+
+
+User {
     private String mail;
     private String userName;
 
