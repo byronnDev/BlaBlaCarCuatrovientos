@@ -129,20 +129,20 @@ public class AddRouteActivity extends AppCompatActivity {
                     tvLatitude.setText(coords[0]);
                     tvLongitude.setText(coords[1]);
                 }
-//                Route route = new Route();
-//                if (switchTipoRuta.isChecked()) {
-//                    route.setLugarInicio(streetName);
-//                    route.setLugarFin(instituteCoordinates[0] + ", " + instituteCoordinates[1]);
-//                } else {
-//                    route.setLugarInicio(instituteCoordinates[0] + ", " + instituteCoordinates[1]);
-//                    route.setLugarFin(streetName);
-//                }
-//                route.setFechaCreacion(new Date());
-//                Map<String, Object> data = new HashMap<>();
-//                data.put("lugarInicio", route.getLugarInicio());
-//                data.put("lugarFin", route.getLugarFin());
-//                data.put("fechaCreacion", route.getFechaCreacion());
-//                db.collection("routes").add(data);
+                Route route = new Route();
+                if (switchTipoRuta.isChecked()) {
+                    route.setLugarInicio(streetName);
+                    route.setLugarFin(instituteCoordinates[0] + ", " + instituteCoordinates[1]);
+                } else {
+                    route.setLugarInicio(instituteCoordinates[0] + ", " + instituteCoordinates[1]);
+                    route.setLugarFin(streetName);
+                }
+                route.setFechaCreacion(new Date());
+                Map<String, Object> data = new HashMap<>();
+                data.put("lugarInicio", route.getLugarInicio());
+                data.put("lugarFin", route.getLugarFin());
+                data.put("fechaCreacion", route.getFechaCreacion());
+                db.collection("routes").add(data);
             }
         });
     }
