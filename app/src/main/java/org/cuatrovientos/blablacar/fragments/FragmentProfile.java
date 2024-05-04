@@ -1,6 +1,7 @@
 package org.cuatrovientos.blablacar.fragments;
 
 import android.content.Intent;
+import android.database.CursorWindow;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -31,16 +32,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.activities.Login;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Map;
 
 public class FragmentProfile extends Fragment {
     private Button btnLogout;
     private TextView nombre;
     private TextView email;
+    private TextView phone;
     private ImageView imgUsuario;
     private TextView o2Points;
 
@@ -55,10 +60,13 @@ public class FragmentProfile extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        setNewSizeImage(100); // 100MB
+
 
         // Initialize views
         nombre = view.findViewById(R.id.txtNombre);
         email = view.findViewById(R.id.txtMail);
+        phone = view.findViewById(R.id.txtPhone);
         imgUsuario = view.findViewById(R.id.imgUsuario);
         o2Points = view.findViewById(R.id.txtO2Points);
         btnLogout = view.findViewById(R.id.btnLogOut);
@@ -79,26 +87,60 @@ public class FragmentProfile extends Fragment {
                 imagePickerLauncher.launch("image/*");
             }
 
-            // Declare an ActivityResultLauncher for image selection
+            // Añadir ActivityResultLauncher para seleccionar imagen de perfil
             ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
                     new ActivityResultContracts.GetContent(),
                     uri -> {
+                        // Handle the returned Uri
                         if (uri != null) {
-                            // Handle the selected image URI here
-                            imgUsuario.setImageURI(uri);
-                            imgUsuario.setClipToOutline(true);
-                            imgUsuario.setBackgroundResource(R.drawable.rounded_corner);
-                            // Ajustar la escala de la imagen para que ocupe todo el espacio dentro del ImageView
-                            imgUsuario.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-                            // Guardamos la url de la imagen en la bbdd en el usuario actual
-                            db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).update("picture", uri);
+                            try {
+                                Bitmap bitmap = BitmapFactory.decodeStream(requireActivity().getContentResolver().openInputStream(uri));
+                                imgUsuario.setImageBitmap(bitmap);
+                                guardarImagenUsuario(bitmap);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
             );
         });
 
         return view;
+    }
+
+    private static void setNewSizeImage(int mb) {
+        try {
+            Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
+            field.setAccessible(true);
+            field.set(null, mb * 1024 * 1024); //the 100MB is the new size
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void guardarImagenUsuario(Bitmap bitmap) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            currentUser.updateProfile(new com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                    .setPhotoUri(currentUser.getPhotoUrl())
+                    .build()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    mostrarMensajeError("Imagen de perfil actualizada correctamente");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    mostrarMensajeError("Error al actualizar la imagen de perfil");
+                }
+            });
+        } else {
+            mostrarMensajeError("No hay una sesión activa");
+        }
     }
 
     private void cargarDatosUsuario() {
@@ -137,13 +179,9 @@ public class FragmentProfile extends Fragment {
         String nombreYApellido = getStringFromMap(userData, "name") + " " + getStringFromMap(userData, "surname");
         nombre.setText(nombreYApellido);
 
-        String imgUrl = getStringFromMap(userData, "picture");
-        Bitmap bitmap = getBitmapFromURL(imgUrl);
-        if (bitmap != null) {
-            imgUsuario.setImageBitmap(bitmap);
-        }
+        phone.setText(getStringFromMap(userData, "phone"));
 
-        String o2PointsText = getStringFromMap(userData, "o2Points");
+        String o2PointsText = getStringFromMap(userData, "O2Points");
         if (!o2PointsText.isEmpty()) {
             o2Points.setText(o2PointsText);
         }
