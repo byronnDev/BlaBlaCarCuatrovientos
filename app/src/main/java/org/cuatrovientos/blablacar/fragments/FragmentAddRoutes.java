@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.adapters.RecyclerDataAdapter;
@@ -25,6 +26,8 @@ public class FragmentAddRoutes extends Fragment {
     List<Route> routesList = new ArrayList<Route>();
     RecyclerView recyclerView;
     DataListener callback;
+    ImageButton btnAddRoute;
+
 
     public FragmentAddRoutes() {
         // Required empty public constructor
@@ -35,6 +38,7 @@ public class FragmentAddRoutes extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_routes, container, false);
+        this.btnAddRoute = (ImageButton) view.findViewById(R.id.btnAddInnerRoute);
         routesList.clear();
         User user1 = new User("John", "Doe", "john@example.com", "+123456789");
         User user2 = new User("Alice", "Smith", "alice@example.com", "+987654321");
@@ -57,6 +61,15 @@ public class FragmentAddRoutes extends Fragment {
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
         this.recyclerView.setAdapter(routesAdapter);
 
+        this.btnAddRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO
+                //crear un objeto de tipo Ruta y construirlo, luego el resto de la logica de la clase
+                callback.addRoute();
+            }
+        });
+
         return view;
     }
     @Override
@@ -73,6 +86,8 @@ public class FragmentAddRoutes extends Fragment {
 
     public interface DataListener {
         void sendData(int idRuta);
+
+        void addRoute();
     }
 
 

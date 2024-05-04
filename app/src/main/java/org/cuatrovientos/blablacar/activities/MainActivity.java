@@ -4,28 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.fragments.FragmentAddRoutes;
-import org.cuatrovientos.blablacar.fragments.FragmentDetails;
 import org.cuatrovientos.blablacar.fragments.FragmentHome;
-import org.cuatrovientos.blablacar.fragments.FragmentMap;
 import org.cuatrovientos.blablacar.fragments.FragmentProfile;
 import org.cuatrovientos.blablacar.fragments.FragmentYourRoutes;
-import org.cuatrovientos.blablacar.models.Route;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView
         .OnItemSelectedListener, FragmentAddRoutes.DataListener {
@@ -117,8 +108,15 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
 
     @Override
     public void sendData(int idRuta) {
+
         Intent intent = new Intent(MainActivity.this,RoutesActivity.class);
         intent.putExtra("id",idRuta);
         startActivity(intent);
     }
+    @Override
+    public void addRoute() {
+        Intent intent = new Intent(MainActivity.this,AddRouteActivity.class);
+        startActivity(intent);
+    }
+
 }
