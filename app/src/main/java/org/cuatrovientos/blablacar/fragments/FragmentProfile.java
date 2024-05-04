@@ -1,5 +1,6 @@
 package org.cuatrovientos.blablacar.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.CursorWindow;
 import android.graphics.Bitmap;
@@ -18,7 +19,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,7 +32,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.activities.Login;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -40,6 +43,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
+import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
 
 public class FragmentProfile extends Fragment {
     private Button btnLogout;
@@ -60,7 +64,7 @@ public class FragmentProfile extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        setNewSizeImage(100); // 100MB
+        fixSizeError(100); // 100MB CursorWindow size limit to avoid SQLiteBlobTooBigException
 
 
         // Initialize views
@@ -96,7 +100,7 @@ public class FragmentProfile extends Fragment {
                             try {
                                 Bitmap bitmap = BitmapFactory.decodeStream(requireActivity().getContentResolver().openInputStream(uri));
                                 imgUsuario.setImageBitmap(bitmap);
-                                guardarImagenUsuario(bitmap);
+                                guardarImagenUsuario(bitmap); // Guarda la imagen localmente
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -108,7 +112,7 @@ public class FragmentProfile extends Fragment {
         return view;
     }
 
-    private static void setNewSizeImage(int mb) {
+    private static void fixSizeError(int mb) {
         try {
             Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
             field.setAccessible(true);
@@ -117,30 +121,38 @@ public class FragmentProfile extends Fragment {
             e.printStackTrace();
         }
     }
-
     private void guardarImagenUsuario(Bitmap bitmap) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] data = baos.toByteArray();
+        // Convierte la imagen a bytes
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] imageData = baos.toByteArray();
 
-            currentUser.updateProfile(new com.google.firebase.auth.UserProfileChangeRequest.Builder()
-                    .setPhotoUri(currentUser.getPhotoUrl())
-                    .build()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    mostrarMensajeError("Imagen de perfil actualizada correctamente");
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    mostrarMensajeError("Error al actualizar la imagen de perfil");
-                }
-            });
-        } else {
-            mostrarMensajeError("No hay una sesión activa");
+        try {
+            // Guarda los bytes de la imagen en un archivo en el almacenamiento interno
+            FileOutputStream fos = requireContext().openFileOutput("profile_image.png", getContext().MODE_PRIVATE);
+            fos.write(imageData);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+    // Cargar imagen desde almacenamiento local
+    private Bitmap cargarImagenLocal() {
+        Bitmap bitmap = null;
+        try {
+            // Verifica si el fragmento está adjunto a una actividad
+            if (isAdded()) {
+                // Accede al contexto del fragmento
+                Context context = requireContext();
+                // Lee la imagen desde el archivo en el almacenamiento interno
+                FileInputStream fis = context.openFileInput("profile_image.png");
+                bitmap = BitmapFactory.decodeStream(fis);
+                fis.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 
     private void cargarDatosUsuario() {
@@ -148,11 +160,17 @@ public class FragmentProfile extends Fragment {
         if (currentUser != null) {
             String mail = currentUser.getEmail();
             obtenerDatosUsuario(mail);
+            cargarImagenDesdeAlmacenamientoLocal(); // Carga la imagen desde almacenamiento local
         } else {
             mostrarMensajeError("No hay una sesión activa");
         }
     }
-
+    private void cargarImagenDesdeAlmacenamientoLocal() {
+        Bitmap bitmap = cargarImagenLocal();
+        if (bitmap != null) {
+            imgUsuario.setImageBitmap(bitmap);
+        }
+    }
     private void obtenerDatosUsuario(String mail) {
         CollectionReference usersRef = db.collection("users");
         usersRef.document(mail).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -178,13 +196,14 @@ public class FragmentProfile extends Fragment {
         email.setText(getStringFromMap(userData, "mail"));
         String nombreYApellido = getStringFromMap(userData, "name") + " " + getStringFromMap(userData, "surname");
         nombre.setText(nombreYApellido);
-
         phone.setText(getStringFromMap(userData, "phone"));
-
         String o2PointsText = getStringFromMap(userData, "O2Points");
         if (!o2PointsText.isEmpty()) {
             o2Points.setText(o2PointsText);
         }
+
+        // Load user profile image
+        cargarDatosUsuario();
     }
 
     private String getStringFromMap(Map<String, Object> map, String key) {
@@ -198,19 +217,6 @@ public class FragmentProfile extends Fragment {
                 Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private Bitmap getBitmapFromURL(String url) {
-        try {
-            URL imageUrl = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) imageUrl.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            return null;
-        }
     }
 
     private void onLogout() {

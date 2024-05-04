@@ -134,7 +134,6 @@ public class Registrar extends AppCompatActivity {
         user.put("surname", txtSurname.getText().toString());
         user.put("mail", txtMail.getText().toString());
         user.put("phone", txtPhone.getText().toString());
-        user.put("picture", null);
         // Start with 0 O2 points and an empty list of routes
         user.put("O2Points", 0);
         user.put("Routes", new ArrayList<Route>());
