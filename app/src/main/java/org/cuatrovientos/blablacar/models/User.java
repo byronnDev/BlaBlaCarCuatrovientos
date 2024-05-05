@@ -12,6 +12,10 @@ public class User {
     private ArrayList<Route> routesSubscribed;//rutas a las que esta apuntado
     private ArrayList<Route> routesBaned;//rutas en las que esta baneado;
 
+    public User() {
+        routesSubscribed = new ArrayList<>();
+    }
+
     public User(String name, String surname, String mail, String phone) {
         this.name = name;
         this.surname = surname;
@@ -82,7 +86,9 @@ public class User {
     public ArrayList<Route> getRoutesBaned() {
         return routesBaned;
     }
-
+    public void apuntarRuta(Route ruta) {
+        routesSubscribed.add(ruta);
+    }
     public void setRoutesBaned(ArrayList<Route> routesBaned) {
         this.routesBaned = routesBaned;
     }

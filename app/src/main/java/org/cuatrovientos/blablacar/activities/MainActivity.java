@@ -3,7 +3,6 @@ package org.cuatrovientos.blablacar.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -20,8 +19,6 @@ import org.cuatrovientos.blablacar.fragments.FragmentYourRoutes;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView
         .OnItemSelectedListener, FragmentAddRoutes.DataListener {
-    //private MapView mMapView;
-    //private MapController mMapController;
     BottomNavigationView bottomNav;
     FragmentHome homeView = new FragmentHome();
     FragmentAddRoutes addRoutesView = new FragmentAddRoutes();
@@ -49,19 +46,16 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         int itemId = item.getItemId();
         if (isHome(itemId)) {
             setHomeView();
-            return true; // Seleccionar el botón
         } else if (isAddRoutes(itemId)) {
             setAddRoutesView();
-            return true; // Seleccionar el botón
         } else if (isYourRoutesView(itemId)) {
             setYourRoutesView();
-            return true; // Seleccionar el botón
         } else if (isProfile(itemId)) {
             setProfileView();
-            return true; // Seleccionar el botón
         }
-        return false; // No seleccionar nada
+        return true;
     }
+
     private void setProfileView() {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -98,25 +92,24 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         return itemId == R.id.addRoutes;
     }
 
-    private static boolean isYourRoutesView(int itemId) { return itemId == R.id.routesHistory; }
-
+    private static boolean isYourRoutesView(int itemId) {
+        return itemId == R.id.routesHistory;
+    }
 
     private static boolean isHome(int itemId) {
         return itemId == R.id.home;
     }
 
-
     @Override
     public void sendData(int idRuta) {
-
         Intent intent = new Intent(MainActivity.this,RoutesActivity.class);
         intent.putExtra("id",idRuta);
         startActivity(intent);
     }
+
     @Override
     public void addRoute() {
         Intent intent = new Intent(MainActivity.this,AddRouteActivity.class);
         startActivity(intent);
     }
-
 }

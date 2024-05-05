@@ -1,5 +1,7 @@
 package org.cuatrovientos.blablacar.fragments;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.os.Bundle;
 
@@ -8,15 +10,21 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.adapters.RecyclerDataAdapter;
 import org.cuatrovientos.blablacar.models.Route;
-import org.cuatrovientos.blablacar.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +35,7 @@ public class FragmentAddRoutes extends Fragment {
     RecyclerView recyclerView;
     DataListener callback;
     ImageButton btnAddRoute;
-
+    FirebaseFirestore db;
 
     public FragmentAddRoutes() {
         // Required empty public constructor
@@ -39,39 +47,50 @@ public class FragmentAddRoutes extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_routes, container, false);
         this.btnAddRoute = (ImageButton) view.findViewById(R.id.btnAddInnerRoute);
-        routesList.clear();
-        User user1 = new User("John", "Doe", "john@example.com", "+123456789");
-        User user2 = new User("Alice", "Smith", "alice@example.com", "+987654321");
-        routesList.add(new Route(1, "40.7128° N, 74.0060° W", "34.0522° N, 118.2437° W", "08:00", 3, user1));
-        routesList.add(new Route(2, "51.5074° N, 0.1278° W", "48.8566° N, 2.3522° E", "09:30", 2, user2));
-        routesList.add(new Route(3, "35.6895° N, 139.6917° E", "37.7749° N, 122.4194° W", "10:45", 4, user1));
-        routesList.add(new Route(4, "52.3667° N, 4.8945° E", "52.5200° N, 13.4050° E", "12:15", 1, user2));
-        routesList.add(new Route(5, "19.4326° N, 99.1332° W", "20.5937° N, 78.9629° E", "14:00", 3, user1));
-
-
         this.recyclerView = (RecyclerView) view.findViewById(R.id.recyclerRutas);
-        RecyclerDataAdapter routesAdapter = new RecyclerDataAdapter(routesList, new RecyclerDataAdapter.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(Route conten) {
-                int idMail = conten.getId_ruta();
-                callback.sendData(idMail);
-            }
-        });
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
-        this.recyclerView.setAdapter(routesAdapter);
+        this.db = FirebaseFirestore.getInstance();
+
+        db.collection("routes")
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        routesList.clear(); // Limpiar la lista antes de agregar nuevas rutas
+                        for (DocumentSnapshot document : task.getResult()) {
+                            Route route = document.toObject(Route.class);
+                            routesList.add(route);
+                        }
+                        RecyclerDataAdapter routesAdapter = new RecyclerDataAdapter(routesList, new RecyclerDataAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(Route conten) {
+                                int idMail = conten.getId_ruta();
+                                callback.sendData(idMail);
+                            }
+
+                            @Override
+                            public void onItemClick(Route route, int position) {
+                                callback.sendData(route.getId_ruta());
+                            }
+                        });
+                        recyclerView.setAdapter(routesAdapter);
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                }
+            });
 
         this.btnAddRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
-                //crear un objeto de tipo Ruta y construirlo, luego el resto de la logica de la clase
                 callback.addRoute();
             }
         });
 
         return view;
     }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -89,6 +108,4 @@ public class FragmentAddRoutes extends Fragment {
 
         void addRoute();
     }
-
-
 }

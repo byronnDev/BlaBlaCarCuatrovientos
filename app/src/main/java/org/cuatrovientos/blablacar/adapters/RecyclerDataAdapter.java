@@ -15,9 +15,7 @@ import java.util.List;
 
 public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapter.RecyclerDataHolder>{
     List<Route> listaDeElementos;
-
     OnItemClickListener itemListener;
-
 
     public RecyclerDataAdapter(List<Route> lista, OnItemClickListener listener){
         listaDeElementos = lista;
@@ -33,59 +31,42 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerDataAdapter.RecyclerDataHolder holder, int position) {
-        holder.assignData(listaDeElementos.get(position),itemListener);
+        holder.assignData(listaDeElementos.get(position), itemListener);
     }
 
     @Override
     public int getItemCount() {
-
         return listaDeElementos.size();
-
     }
 
     public class RecyclerDataHolder extends RecyclerView.ViewHolder {
+    TextView tvLugarInicio;
+    TextView tvLugarFin;
+    TextView tvHuecos;
 
-        TextView id;
-
-
-
-        public RecyclerDataHolder(@NonNull View itemView) {
-
-            super(itemView);
-
-            id = itemView.findViewById(R.id.RoutesitemTxtIdruta);
-
-
-        }
-
-        public void assignData(Route contenido, OnItemClickListener onItemClickListener){
-            String rutasId = String.valueOf(contenido.getId_ruta());
-            rutasId = "Ruta " + rutasId;
-
-
-
-            id.setText(rutasId);
-
-
-
-
-
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //si en el evento onItemClick pusimos que pasara la posicion en la que se encuentra el item lo pondremos
-                    //como parametro aqui poniendo getAdapterPosition(), como esta puesto aqui
-
-                    onItemClickListener.onItemClick(contenido);
-                }
-            });
-        }
-
+    public RecyclerDataHolder(@NonNull View itemView) {
+        super(itemView);
+        tvLugarInicio = itemView.findViewById(R.id.tvLugarInicio);
+        tvLugarFin = itemView.findViewById(R.id.tvLugarFin);
+        tvHuecos = itemView.findViewById(R.id.tvHuecos);
     }
 
-    public interface OnItemClickListener{
+    public void assignData(Route route, OnItemClickListener listener) {
+        tvLugarInicio.setText(tvLugarInicio.getText() + route.getLugarInicio());
+        tvLugarFin.setText(tvLugarFin.getText() + route.getLugarFin());
+        tvHuecos.setText(tvHuecos.getText() + String.valueOf(route.getHuecos()));
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(route, getAdapterPosition());
+            }
+        });
+    }
+}
 
+    public interface OnItemClickListener {
         void onItemClick(Route conten);
+
+        void onItemClick(Route route, int position);
     }
 }

@@ -27,6 +27,7 @@ public class Route {
     private FirebaseFirestore db;
 
     public Route() {
+        usuariosApuntados = new ArrayList<User>();
     }
 
     public Route(int id, String lugarInicio, String lugarFin, String horaSalida, int huecos, User usuarioPropietario) {
@@ -70,7 +71,11 @@ public class Route {
 
 
     }
-
+    public void apuntarUsuario(User usuario) {
+        if (usuariosApuntados.size() < huecos) {
+            usuariosApuntados.add(usuario);
+        }
+    }
     public void insertToDatabase(){
         db = FirebaseFirestore.getInstance();
         CollectionReference routesRef = db.collection("routes");

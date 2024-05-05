@@ -1,81 +1,112 @@
 package org.cuatrovientos.blablacar.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-import android.widget.TextView;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.models.Route;
 import org.cuatrovientos.blablacar.models.User;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 public class FragmentDetails extends Fragment {
-    RecyclerView recyclerRutas;
-    TextView test;
-    List<Route> routesList = new ArrayList<Route>();
-    FirebaseFirestore db;
-    public FragmentDetails() {
-        // Required empty public constructor
-        db = FirebaseFirestore.getInstance();
-    }
+    private FirebaseFirestore db;
+    private Button btnUnirse;
+    private Route route;
+    private TextView tvLugarInicio;
+    private TextView tvLugarFin;
+    private TextView tvHuecos;
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
 
-        //TODO
-        //vincular los items del xml a variables
-        test = (TextView) view.findViewById(R.id.textView2);
-        routesList.clear();
-        User user1 = new User("John", "Doe", "john@example.com", "+123456789");
-        User user2 = new User("Alice", "Smith", "alice@example.com", "+987654321");
-        routesList.add(new Route(1, "40.7128° N, 74.0060° W", "34.0522° N, 118.2437° W", "08:00", 3, user1));
-        routesList.add(new Route(2, "51.5074° N, 0.1278° W", "48.8566° N, 2.3522° E", "09:30", 2, user2));
-        routesList.add(new Route(3, "35.6895° N, 139.6917° E", "37.7749° N, 122.4194° W", "10:45", 4, user1));
-        routesList.add(new Route(4, "52.3667° N, 4.8945° E", "52.5200° N, 13.4050° E", "12:15", 1, user2));
-        routesList.add(new Route(5, "19.4326° N, 99.1332° W", "20.5937° N, 78.9629° E", "14:00", 3, user1));
+        db = FirebaseFirestore.getInstance();
+        btnUnirse = view.findViewById(R.id.btnUnirse);
+        tvLugarInicio = view.findViewById(R.id.tvLugarInicio);
+        tvLugarFin = view.findViewById(R.id.tvLugarFin);
+        tvHuecos = view.findViewById(R.id.tvHuecos);
 
+        Bundle args = getArguments();
+        if (args != null) {
+            int idRuta = args.getInt("id", 0);
 
-        //poner toda la informacion en los textos del xml
+            db.collection("routes").document(String.valueOf(idRuta))
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        route = documentSnapshot.toObject(Route.class);
+                        // Aquí puedes mostrar los detalles de la ruta
+                        // Por ejemplo, puedes establecer el texto de varios TextView con los datos de la ruta
+                        tvLugarInicio.setText("Lugar de inicio: " + route.getLugarInicio());
+                        tvLugarFin.setText("Lugar de fin: " + route.getLugarFin());
+                        tvHuecos.setText("Huecos disponibles: " + route.getHuecos());
+                    }
+                });
+        }
 
-
-
-
+        btnUnirse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (route != null) {
+                    // Obtén el usuario actual
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (currentUser != null) {
+                        db.collection("users").document(currentUser.getUid())
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    User currentAppUser = documentSnapshot.toObject(User.class);
+                                    if (currentAppUser != null) {
+                                        route.apuntarUsuario(currentAppUser);
+                                        currentAppUser.apuntarRuta(route);
+                                        db.collection("routes").document(String.valueOf(route.getId_ruta())).set(route);
+                                        db.collection("users").document(currentUser.getUid()).set(currentAppUser);
+                                    }
+                                }
+                            });
+                    }
+                }
+            }
+        });
 
         return view;
     }
 
-    public interface DataListener {
-        void sendData(int idRuta);
+    public void renderData(int idRuta) {
+        db.collection("routes").document(String.valueOf(idRuta))
+            .get()
+            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    route = documentSnapshot.toObject(Route.class);
+                    // Aquí puedes mostrar los detalles de la ruta
+                    // Por ejemplo, puedes establecer el texto de varios TextView con los datos de la ruta
+                    tvLugarInicio.setText("Lugar de inicio: " + route.getLugarInicio());
+                    tvLugarFin.setText("Lugar de fin: " + route.getLugarFin());
+                    tvHuecos.setText("Huecos disponibles: " + route.getHuecos());
+                }
+            });
     }
 
-    public void renderData(int idRuta) {
-        //TODO
-        //crear un objeto de tipo Ruta y construirlo, luego el resto de la logica de la clase
-
-        test.setText(String.valueOf(routesList.get(idRuta).getId_ruta()));
-
-
+    public interface DataListener {
+        void sendData(int idRuta);
 
     }
 }
