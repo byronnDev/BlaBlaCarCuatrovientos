@@ -27,6 +27,8 @@ import org.cuatrovientos.blablacar.models.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.cuatrovientos.blablacar.utils.dbQuery;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,13 +59,15 @@ public class AddRouteActivity extends AppCompatActivity {
     private EditText etStreetNumber;
     private EditText etHuecos;
     private EditText etHoraSalida;
-
+    private dbQuery dbQuery;
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_route);
 
         db = FirebaseFirestore.getInstance();
+        dbQuery = new dbQuery(this);
 
         actvStreetName = findViewById(R.id.editTextcalle);
         tvLatitude = findViewById(R.id.tvLatitude);
@@ -75,6 +79,7 @@ public class AddRouteActivity extends AppCompatActivity {
         etHoraSalida = findViewById(R.id.editTextHoraSalida);
         streets = new ArrayList<>();
         coordinates = new HashMap<>();
+
 
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, streets) {
             public Filter getFilter() {
@@ -155,9 +160,21 @@ public class AddRouteActivity extends AppCompatActivity {
 
         actvStreetName.setAdapter(adapter);
 
+        dbQuery.getUserDataFromFirestore(dbQuery.getCurrentUserEmail(), new org.cuatrovientos.blablacar.utils.dbQuery.UserDataSuccessListener() {
+            @Override
+            public void onUserDataReceived(User userData) {
+                user = userData;
+            }
+
+            @Override
+            public void onUserDataError(String errorMessage) {
+                // Manejar el error aquí
+            }
+        });
         btnSave.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
+
         db.collection("counters").document("routes")
             .get()
             .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -186,6 +203,7 @@ public class AddRouteActivity extends AppCompatActivity {
                     }
                     String horaSalida = etHoraSalida.getText().toString();
 
+//                    User currentAppUser = documentSnapshot.toObject(User.class);
                     route.setHuecos(huecos);
                     route.setFechaCreacion(new Date());
                     route.setHoraSalida(horaSalida);
