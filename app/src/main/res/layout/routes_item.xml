@@ -1,32 +1,91 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvLugarInicio"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lugar de inicio: " />
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/tvLugarFin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lugar de fin: " />
+        <TextView
+            android:id="@+id/tvLugarInicio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Lugar inicio"
+            android:textSize="16sp"
+            android:autoSizeMinTextSize="16sp"
+            android:maxWidth="100sp"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:layout_marginEnd="8dp" />
 
-    <TextView
-        android:id="@+id/tvHoraSalida"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hora de salida: " />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_arrow_right_alt_24"
+            android:layout_marginEnd="8dp" />
 
-    <TextView
-        android:id="@+id/tvHuecos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Huecos disponibles: " />
+        <TextView
+            android:id="@+id/tvLugarFin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Lugar de fin"
+            android:textSize="16sp"
+            android:autoSizeMinTextSize="16sp"
+            android:maxWidth="100sp"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:layout_marginEnd="8dp" />
 
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/tvHoraSalida"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="12:00"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/round_airline_seat_recline_normal_24"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="4dp"
+                app:tint="@android:color/holo_blue_light" />
+
+            <TextView
+                android:id="@+id/tvHuecos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:textColor="@android:color/holo_blue_light"
+                android:textSize="12sp"
+                android:maxLength="2"
+                android:ellipsize="end"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
 </LinearLayout>

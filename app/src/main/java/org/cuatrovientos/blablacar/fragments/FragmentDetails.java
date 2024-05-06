@@ -52,9 +52,9 @@ public class FragmentDetails extends Fragment {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         route = documentSnapshot.toObject(Route.class);
-                        tvLugarInicio.setText("Lugar de inicio: " + route.getLugarInicio());
-                        tvLugarFin.setText("Lugar de fin: " + route.getLugarFin());
-                        tvHuecos.setText("Huecos disponibles: " + route.getHuecos());
+                        tvLugarInicio.setText(route.getLugarInicio());
+                        tvLugarFin.setText(route.getLugarFin());
+                        tvHuecos.setText(route.getHuecos());
                     }
                 });
         btnUnirse.setOnClickListener(new View.OnClickListener() {
