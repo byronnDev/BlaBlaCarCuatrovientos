@@ -8,33 +8,33 @@
         android:id="@+id/tvLugarInicio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Lugar de inicio: "
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvLugarFin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tvLugarInicio"
+        android:layout_marginTop="19dp"
         android:text="Lugar de fin: "
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_below="@id/tvLugarInicio"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp" />
+        android:textStyle="bold" />
+
+
     <TextView
         android:id="@+id/tvHuecos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tvLugarFin"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="306dp"
         android:text="Lugar de fin: "
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_below="@id/tvLugarFin"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp" />
-
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btnUnirse"

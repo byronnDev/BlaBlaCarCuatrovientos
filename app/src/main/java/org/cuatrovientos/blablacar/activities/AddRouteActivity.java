@@ -154,7 +154,6 @@ public Filter getFilter() {
                         return;
                     }
                     Route route = new Route();
-                    route.setId_ruta(count.intValue());
                     if (switchTipoRuta.isChecked()) {
                         route.setLugarInicio(streetName);
                         route.setLugarFin("Instituto");

@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     }
 
     @Override
-    public void sendData(int idRuta) {
+    public void sendData(String idRuta) {
         Intent intent = new Intent(MainActivity.this,RoutesActivity.class);
         intent.putExtra("id",idRuta);
         startActivity(intent);

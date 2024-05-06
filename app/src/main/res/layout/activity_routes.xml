@@ -14,10 +14,10 @@
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_details" />
 
-<!--    <androidx.fragment.app.FragmentContainerView-->
-<!--        android:id="@+id/fragmentContainerView"-->
-<!--        android:name="org.cuatrovientos.blablacar.fragments.FragmentMap"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent" />-->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="org.cuatrovientos.blablacar.fragments.FragmentMap"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

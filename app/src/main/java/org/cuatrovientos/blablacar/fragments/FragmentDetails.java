@@ -41,25 +41,22 @@ public class FragmentDetails extends Fragment {
         tvLugarFin = view.findViewById(R.id.tvLugarFin);
         tvHuecos = view.findViewById(R.id.tvHuecos);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            int idRuta = args.getInt("id", 0);
+        return view;
+    }
 
-            db.collection("routes").document(String.valueOf(idRuta))
+    public void renderData(String idRuta) {
+
+        db.collection("routes").document(String.valueOf(idRuta))
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         route = documentSnapshot.toObject(Route.class);
-                        // Aquí puedes mostrar los detalles de la ruta
-                        // Por ejemplo, puedes establecer el texto de varios TextView con los datos de la ruta
                         tvLugarInicio.setText("Lugar de inicio: " + route.getLugarInicio());
                         tvLugarFin.setText("Lugar de fin: " + route.getLugarFin());
                         tvHuecos.setText("Huecos disponibles: " + route.getHuecos());
                     }
                 });
-        }
-
         btnUnirse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,29 +65,23 @@ public class FragmentDetails extends Fragment {
                     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                     if (currentUser != null) {
                         db.collection("users").document(currentUser.getUid())
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    User currentAppUser = documentSnapshot.toObject(User.class);
-                                    if (currentAppUser != null) {
-                                        route.apuntarUsuario(currentAppUser);
-                                        currentAppUser.apuntarRuta(route);
-                                        db.collection("routes").document(String.valueOf(route.getId_ruta())).set(route);
-                                        db.collection("users").document(currentUser.getUid()).set(currentAppUser);
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        User currentAppUser = documentSnapshot.toObject(User.class);
+                                        if (currentAppUser != null) {
+                                            route.apuntarUsuario(currentAppUser);
+                                            currentAppUser.apuntarRuta(route);
+                                            db.collection("routes").document(String.valueOf(route.getId_ruta())).set(route);
+                                            db.collection("users").document(currentUser.getUid()).set(currentAppUser);
+                                        }
                                     }
-                                }
-                            });
+                                });
                     }
                 }
             }
         });
-
-        return view;
-    }
-
-    public void renderData(int idRuta) {
-
     }
 
     public interface DataListener {

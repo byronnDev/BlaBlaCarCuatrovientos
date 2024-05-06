@@ -8,6 +8,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.models.Route;
 
@@ -50,7 +53,6 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
         tvLugarFin = itemView.findViewById(R.id.tvLugarFin);
         tvHuecos = itemView.findViewById(R.id.tvHuecos);
     }
-
     public void assignData(Route route, OnItemClickListener listener) {
         tvLugarInicio.setText(tvLugarInicio.getText() + route.getLugarInicio());
         tvLugarFin.setText(tvLugarFin.getText() + route.getLugarFin());
@@ -58,15 +60,14 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onItemClick(route, getAdapterPosition());
+                listener.onItemClick(route);
             }
         });
     }
-}
+    }
 
     public interface OnItemClickListener {
         void onItemClick(Route conten);
 
-        void onItemClick(Route route, int position);
     }
 }

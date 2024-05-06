@@ -60,18 +60,14 @@ public class FragmentAddRoutes extends Fragment {
                         routesList.clear(); // Limpiar la lista antes de agregar nuevas rutas
                         for (DocumentSnapshot document : task.getResult()) {
                             Route route = document.toObject(Route.class);
+                            route.setId_ruta(document.getId());
                             routesList.add(route);
                         }
                         RecyclerDataAdapter routesAdapter = new RecyclerDataAdapter(routesList, new RecyclerDataAdapter.OnItemClickListener() {
                             @Override
                             public void onItemClick(Route conten) {
-                                int idMail = conten.getId_ruta();
-                                callback.sendData(idMail);
-                            }
-
-                            @Override
-                            public void onItemClick(Route route, int position) {
-                                callback.sendData(route.getId_ruta());
+                                String idRoute = conten.getId_ruta();
+                                callback.sendData(idRoute);
                             }
                         });
                         recyclerView.setAdapter(routesAdapter);
@@ -104,7 +100,7 @@ public class FragmentAddRoutes extends Fragment {
     }
 
     public interface DataListener {
-        void sendData(int idRuta);
+        void sendData(String idRuta);
 
         void addRoute();
     }

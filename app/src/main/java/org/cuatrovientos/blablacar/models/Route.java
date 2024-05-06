@@ -15,7 +15,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Route {
-    private int id_ruta;
+    private String id_ruta;
     private String lugarInicio;//son dos coordenadas, separadas por coma
     private String lugarFin;//son dos coordenadas, separadas por coma
     private String horaSalida;
@@ -30,28 +30,10 @@ public class Route {
         usuariosApuntados = new ArrayList<User>();
     }
 
-    public Route(int id, String lugarInicio, String lugarFin, String horaSalida, int huecos, User usuarioPropietario) {
-        this.id_ruta = id;
-        this.lugarInicio = lugarInicio;
-        this.lugarFin = lugarFin;
-        this.horaSalida = horaSalida;
-        this.fechaCreacion =  new Date(); //Formato EEE MMM dd HH:mm:ss zzz yyyy
-                                            //EEE: Día de la semana abreviado (por ejemplo, "Mon" para lunes).
-                                            //MMM: Mes abreviado (por ejemplo, "Jan" para enero).
-                                            //dd: Día del mes en formato numérico (por ejemplo, "03" para el tercer día del mes).
-                                            //HH: Hora en formato de 24 horas.
-                                            //mm: Minuto.
-                                            //ss: Segundo.
-                                            //zzz: Zona horaria.
-                                            //yyyy: Año.
-        this.propietoario = usuarioPropietario;
-        this.huecos = huecos;
-        this.usuariosApuntados = new ArrayList<User>();
-        this.usuariosBaneados = new ArrayList<User>();
-    }
+
 
     public Route(String lugarInicio, String lugarFin, String horaSalida, int huecos, User usuarioPropietario) {
-        this.id_ruta = 0;
+        this.id_ruta = "";
         this.lugarInicio = lugarInicio;
         this.lugarFin = lugarFin;
         this.horaSalida = horaSalida;
@@ -95,11 +77,11 @@ public class Route {
         });
     }
 
-    public int getId_ruta() {
+    public String getId_ruta() {
         return id_ruta;
     }
 
-    public void setId_ruta(int id_ruta) {
+    public void setId_ruta(String id_ruta) {
         this.id_ruta = id_ruta;
     }
 
