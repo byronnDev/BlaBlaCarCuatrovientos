@@ -76,7 +76,7 @@ public class dbQuery {
     /*
     getUserDataFromFirestore("correo@example.com", new UserDataSuccessListener() {
         @Override
-        public void onUserDataReceived(Map<String, Object> userData) {
+        public void onUserDataReceived(User userData) {
             // Manejar los datos del usuario aquí
         }
 
