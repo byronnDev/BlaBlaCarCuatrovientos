@@ -32,18 +32,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.activities.Login;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Arrays;
 import java.util.Map;
-import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
 
 public class FragmentProfile extends Fragment {
     private Button btnLogout;
