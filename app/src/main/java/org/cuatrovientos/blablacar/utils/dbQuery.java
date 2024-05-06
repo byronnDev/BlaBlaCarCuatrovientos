@@ -11,13 +11,13 @@ import org.cuatrovientos.blablacar.models.Route;
 import org.cuatrovientos.blablacar.models.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class dbQuery {
     private FirebaseFirestore db;
     private Context context;
     private UserDataListener userDataListener;
-
     public dbQuery(Context context) {
         this.db = FirebaseFirestore.getInstance();
         this.context = context;
@@ -41,7 +41,15 @@ public class dbQuery {
         void onUserDataReceived(User userData);
         void onUserDataError(String errorMessage);
     }
-
+    private ArrayList<Route> convertHashMapToArrayList(HashMap<String, Route> hashMap) {
+        ArrayList<Route> arrayList = new ArrayList<>();
+        if (hashMap != null) {
+            for (Map.Entry<String, Route> entry : hashMap.entrySet()) {
+                arrayList.add(entry.getValue());
+            }
+        }
+        return arrayList;
+    }
     public void getUserDataFromFirestore(String userEmail, UserDataSuccessListener listener) {
         db.collection("users")
                 .whereEqualTo("mail", userEmail)
@@ -56,10 +64,13 @@ public class dbQuery {
                                     (String) userData.get("surname"),
                                     (String) userData.get("mail"),
                                     (String) userData.get("phone"),
-                                    (int) userData.get("O2Points"),
+                                    (int) (long) userData.get("O2Points"),
                                     (ArrayList<Route>) userData.get("Routes"),
                                     (ArrayList<Route>) userData.get("routesSubscribed"),
                                     (ArrayList<Route>) userData.get("routesBaned")
+//                                    convertHashMapToArrayList((HashMap<String, Route>) userData.get("Routes")),
+//                                    convertHashMapToArrayList((HashMap<String, Route>) userData.get("routesSubscribed")),
+//                                    convertHashMapToArrayList((HashMap<String, Route>) userData.get("routesBaned"))
                             );
                             listener.onUserDataReceived(user);
                         } else {
@@ -70,6 +81,7 @@ public class dbQuery {
                     }
                 })
                 .addOnFailureListener(e -> listener.onUserDataError("Error al consultar la base de datos: " + e.getMessage()));
+
     }
 
     // Ejemplo de uso
