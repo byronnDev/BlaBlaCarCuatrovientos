@@ -7,7 +7,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
+import org.cuatrovientos.blablacar.models.Route;
+import org.cuatrovientos.blablacar.models.User;
+
+import java.util.ArrayList;
 import java.util.Map;
 
 public class dbQuery {
@@ -21,7 +24,7 @@ public class dbQuery {
     }
 
     public interface UserDataListener {
-        void onUserDataReceived(HashMap<String, Object> userData);
+        void onUserDataReceived(User userData);
 
         void onUserDataError(String errorMessage);
     }
@@ -35,7 +38,7 @@ public class dbQuery {
     }
 
     public interface UserDataSuccessListener {
-        void onUserDataReceived(Map<String, Object> userData);
+        void onUserDataReceived(User userData);
         void onUserDataError(String errorMessage);
     }
 
@@ -48,7 +51,17 @@ public class dbQuery {
                         DocumentSnapshot documentSnapshot = queryDocumentSnapshots.getDocuments().get(0);
                         Map<String, Object> userData = documentSnapshot.getData();
                         if (userData != null) {
-                            listener.onUserDataReceived(userData);
+                            User user = new User(
+                                    (String) userData.get("name"),
+                                    (String) userData.get("surname"),
+                                    (String) userData.get("mail"),
+                                    (String) userData.get("phone"),
+                                    (int) userData.get("O2Points"),
+                                    (ArrayList<Route>) userData.get("Routes"),
+                                    (ArrayList<Route>) userData.get("routesSubscribed"),
+                                    (ArrayList<Route>) userData.get("routesBaned")
+                            );
+                            listener.onUserDataReceived(user);
                         } else {
                             listener.onUserDataError("No se encontraron datos válidos para el usuario.");
                         }
