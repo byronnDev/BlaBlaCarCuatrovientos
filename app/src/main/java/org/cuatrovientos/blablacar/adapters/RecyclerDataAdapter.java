@@ -46,17 +46,20 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
     TextView tvLugarInicio;
     TextView tvLugarFin;
     TextView tvHuecos;
+    TextView tvHoraSalida;
 
     public RecyclerDataHolder(@NonNull View itemView) {
         super(itemView);
         tvLugarInicio = itemView.findViewById(R.id.tvLugarInicio);
         tvLugarFin = itemView.findViewById(R.id.tvLugarFin);
         tvHuecos = itemView.findViewById(R.id.tvHuecos);
+        tvHoraSalida = itemView.findViewById(R.id.tvHoraSalida);
     }
     public void assignData(Route route, OnItemClickListener listener) {
         tvLugarInicio.setText(tvLugarInicio.getText() + route.getLugarInicio());
         tvLugarFin.setText(tvLugarFin.getText() + route.getLugarFin());
         tvHuecos.setText(tvHuecos.getText() + String.valueOf(route.getHuecos()));
+        tvHoraSalida.setText(route.getHoraSalida());
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

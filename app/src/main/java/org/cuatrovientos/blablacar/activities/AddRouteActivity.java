@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.type.DateTime;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.models.Route;
@@ -54,6 +55,7 @@ public class AddRouteActivity extends AppCompatActivity {
     private ImageButton btnSave;
     private EditText etStreetNumber;
     private EditText etHuecos;
+    private EditText etHoraSalida;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class AddRouteActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btnAddInnerRoute);
         etStreetNumber = findViewById(R.id.editTextNCalle);
         etHuecos = findViewById(R.id.editTextHuecos);
+        etHoraSalida = findViewById(R.id.editTextHoraSalida);
         streets = new ArrayList<>();
         coordinates = new HashMap<>();
 
@@ -161,13 +164,19 @@ public Filter getFilter() {
                         route.setLugarInicio("Instituto");
                         route.setLugarFin(streetName);
                     }
+                    String horaSalida = etHoraSalida.getText().toString();
+
                     User currentAppUser = documentSnapshot.toObject(User.class);
                     route.setHuecos(huecos);
                     route.setFechaCreacion(new Date());
+                    route.setHoraSalida(horaSalida);
+
+
                     Map<String, Object> data = new HashMap<>();
                     data.put("id", route.getId_ruta());
                     data.put("lugarInicio", route.getLugarInicio());
                     data.put("lugarFin", route.getLugarFin());
+                    data.put("horaSalida", route.getHoraSalida());
                     data.put("huecos", route.getHuecos());
                     data.put("fechaCreacion", route.getFechaCreacion());
                     data.put("usuariosApuntados", new ArrayList<>());
