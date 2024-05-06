@@ -61,7 +61,7 @@ public class FragmentAddRoutes extends Fragment {
                         for (DocumentSnapshot document : task.getResult()) {
                             Route route = document.toObject(Route.class);
                             route.setId_ruta(document.getId());
-                            routesList.add(route);
+                             if (hasHuecos(route)) routesList.add(route);
                         }
                         RecyclerDataAdapter routesAdapter = new RecyclerDataAdapter(routesList, new RecyclerDataAdapter.OnItemClickListener() {
                             @Override
@@ -74,6 +74,10 @@ public class FragmentAddRoutes extends Fragment {
                     } else {
                         Log.d(TAG, "Error getting documents: ", task.getException());
                     }
+                }
+
+                private boolean hasHuecos(Route route) {
+                    return route.getHuecos() > 0;
                 }
             });
 
