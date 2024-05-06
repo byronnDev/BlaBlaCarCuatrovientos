@@ -18,7 +18,7 @@ import org.cuatrovientos.blablacar.fragments.FragmentProfile;
 import org.cuatrovientos.blablacar.fragments.FragmentYourRoutes;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView
-        .OnItemSelectedListener, FragmentAddRoutes.DataListener {
+        .OnItemSelectedListener, FragmentAddRoutes.DataListener, FragmentYourRoutes.DataListener {
     BottomNavigationView bottomNav;
     FragmentHome homeView = new FragmentHome();
     FragmentAddRoutes addRoutesView = new FragmentAddRoutes();

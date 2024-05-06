@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -76,61 +77,80 @@ public class AddRouteActivity extends AppCompatActivity {
         coordinates = new HashMap<>();
 
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, streets) {
-            @Override
-public Filter getFilter() {
-    return new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            FilterResults filterResults = new FilterResults();
-            if (constraint != null) {
-                String userInput = constraint.toString();
-                OkHttpClient client = new OkHttpClient();
-                String url = "https://api.openrouteservice.org/geocode/search?api_key=" + API_KEY + "&text=" + userInput + "&boundary.country=ES";
-                Request request = new Request.Builder().url(url).build();
-                client.newCall(request).enqueue(new Callback() {
+            public Filter getFilter() {
+                return new Filter() {
                     @Override
-                    public void onFailure(Call call, IOException e) {
-                        e.printStackTrace();
+                    protected FilterResults performFiltering(CharSequence constraint) {
+                        FilterResults filterResults = new FilterResults();
+                        if (constraint != null) {
+                            String userInput = constraint.toString();
+                            OkHttpClient client = new OkHttpClient();
+                            String url = "https://api.openrouteservice.org/geocode/search?api_key=" + API_KEY + "&text=" + userInput + "&boundary.country=ES";
+                            Request request = new Request.Builder().url(url).build();
+                            client.newCall(request).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(Call call, IOException e) {
+                                    e.printStackTrace();
+                                    // Manejo de excepciones en caso de fallo en la llamada a la API
+                                    filterResults.values = new ArrayList<String>(); // Lista vacía para evitar errores
+                                    filterResults.count = 0;
+                                    synchronized (filterResults) {
+                                        filterResults.notifyAll();
+                                    }
+                                }
+
+                                @Override
+                                public void onResponse(Call call, Response response) throws IOException {
+                                    if (response.isSuccessful()) {
+                                        String myResponse = response.body().string();
+                                        try {
+                                            JSONObject json = new JSONObject(myResponse);
+                                            JSONArray features = json.getJSONArray("features");
+                                            streets.clear();
+                                            coordinates.clear();
+                                            for (int i = 0; i < features.length(); i++) {
+                                                JSONObject feature = features.getJSONObject(i);
+                                                String streetName = feature.getJSONObject("properties").getString("label");
+                                                streets.add(streetName);
+                                                JSONArray coords = feature.getJSONObject("geometry").getJSONArray("coordinates");
+                                                coordinates.put(streetName, new String[]{coords.getString(1), coords.getString(0)});
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            // Manejo de excepciones en caso de error al procesar la respuesta JSON
+                                            filterResults.values = new ArrayList<String>(); // Lista vacía para evitar errores
+                                            filterResults.count = 0;
+                                            synchronized (filterResults) {
+                                                filterResults.notifyAll();
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                            // Esperar hasta que se haya completado la llamada a la API y se haya procesado la respuesta
+                            synchronized (filterResults) {
+                                try {
+                                    filterResults.wait(3000); // Tiempo máximo de espera en milisegundos
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            filterResults.values = streets;
+                            filterResults.count = streets.size();
+                        }
+                        return filterResults;
                     }
 
                     @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        if (response.isSuccessful()) {
-                            String myResponse = response.body().string();
-                            try {
-                                JSONObject json = new JSONObject(myResponse);
-                                JSONArray features = json.getJSONArray("features");
-                                streets.clear();
-                                coordinates.clear();
-                                for (int i = 0; i < features.length(); i++) {
-                                    JSONObject feature = features.getJSONObject(i);
-                                    String streetName = feature.getJSONObject("properties").getString("label");
-                                    streets.add(streetName);
-                                    JSONArray coords = feature.getJSONObject("geometry").getJSONArray("coordinates");
-                                    coordinates.put(streetName, new String[]{coords.getString(1), coords.getString(0)});
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                    protected void publishResults(CharSequence constraint, FilterResults results) {
+                        if (results != null && results.count > 0) {
+                            notifyDataSetChanged();
+                        } else {
+                            notifyDataSetInvalidated();
                         }
                     }
-                });
-                filterResults.values = streets;
-                filterResults.count = streets.size();
+                };
             }
-            return filterResults;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            if (results != null && results.count > 0) {
-                notifyDataSetChanged();
-            } else {
-                notifyDataSetInvalidated();
-            }
-        }
-    };
-}
         };
 
         actvStreetName.setAdapter(adapter);
@@ -166,7 +186,6 @@ public Filter getFilter() {
                     }
                     String horaSalida = etHoraSalida.getText().toString();
 
-                    User currentAppUser = documentSnapshot.toObject(User.class);
                     route.setHuecos(huecos);
                     route.setFechaCreacion(new Date());
                     route.setHoraSalida(horaSalida);
@@ -181,7 +200,7 @@ public Filter getFilter() {
                     data.put("fechaCreacion", route.getFechaCreacion());
                     data.put("usuariosApuntados", new ArrayList<>());
                     data.put("usuariosBaneados", new ArrayList<>());
-                    data.put("propietario", currentAppUser);
+                    data.put("propietario", FirebaseAuth.getInstance().getCurrentUser().getEmail());
                     Long finalCount = count;
                     db.collection("routes").add(data)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
