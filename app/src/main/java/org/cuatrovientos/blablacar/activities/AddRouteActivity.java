@@ -216,8 +216,8 @@ public class AddRouteActivity extends AppCompatActivity {
                     data.put("horaSalida", route.getHoraSalida());
                     data.put("huecos", route.getHuecos());
                     data.put("fechaCreacion", route.getFechaCreacion());
-                    data.put("usuariosApuntados", new ArrayList<>());
-                    data.put("usuariosBaneados", new ArrayList<>());
+                    data.put("usuariosApuntados", new ArrayList<User>());
+                    data.put("usuariosBaneados", new ArrayList<User>());
                     data.put("propietario", FirebaseAuth.getInstance().getCurrentUser().getEmail());
                     Long finalCount = count;
                     db.collection("routes").add(data)

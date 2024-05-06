@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -27,12 +29,12 @@ import org.cuatrovientos.blablacar.utils.dbQuery;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FragmentYourRoutes extends Fragment {
     RecyclerView recyclerView;
-    List<Route> routesList;
+    List<Route> routesList = new ArrayList<Route>();
     DataListener callback;
-    dbQuery dbQuery;
     FirebaseFirestore db;
 
     public FragmentYourRoutes() {
@@ -43,11 +45,9 @@ public class FragmentYourRoutes extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_your_routes, container, false);
-        this.recyclerView = (RecyclerView) view.findViewById(R.id.recyclerRutas);
-        this.dbQuery = new dbQuery(this.getContext());
+        this.recyclerView = (RecyclerView) view.findViewById(R.id.tusRutas);
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
         this.db = FirebaseFirestore.getInstance();
-        this.routesList = new ArrayList<Route>();
-        this.dbQuery = new dbQuery(this.getContext());
 
         db.collection("routes")
                 .get()
@@ -58,10 +58,10 @@ public class FragmentYourRoutes extends Fragment {
                             routesList.clear(); // Limpiar la lista antes de agregar nuevas rutas
                             for (DocumentSnapshot document : task.getResult()) {
                                 Route route = document.toObject(Route.class);
+                                // Por alguna razón no pilla el propietario por defecto. Así que se lo asigno de prueba
+                                route.setPropietoario(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail());
                                 route.setId_ruta(document.getId());
-                                if (hasHuecos(route) && isCurrentUserRoute(route)) {
-                                    routesList.add(route);
-                                }
+                                if (hasHuecos(route) && isCurrentUserRoute(route)) routesList.add(route);
                             }
                             RecyclerDataAdapter routesAdapter = new RecyclerDataAdapter(routesList, new RecyclerDataAdapter.OnItemClickListener() {
                                 @Override
@@ -76,22 +76,16 @@ public class FragmentYourRoutes extends Fragment {
                         }
                     }
 
-                    private boolean isCurrentUserRoute(Route route) {
-                        try {
-                            return dbQuery.getCurrentUserEmail().equals(route.getPropietoario().getMail());
-                        } catch (NullPointerException e) {
-                            System.err.println("Error: " + e.getMessage());
-                            return false;
-                        }
-                    }
-
                     private boolean hasHuecos(Route route) {
                         return route.getHuecos() > 0;
                     }
                 });
 
-        // Inflate the layout for this fragment
         return view;
+    }
+    private boolean isCurrentUserRoute(Route route) {
+        String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        return currentUserEmail != null && currentUserEmail.equals(route.getPropietoario());
     }
 
     @Override

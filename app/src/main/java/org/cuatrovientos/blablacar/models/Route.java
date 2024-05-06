@@ -21,7 +21,7 @@ public class Route {
     private String horaSalida;
     private Date fechaCreacion;
     private int huecos;
-    private User propietoario;
+    private String propietoario;
     private ArrayList<User> usuariosApuntados;
     private ArrayList<User> usuariosBaneados;
     private FirebaseFirestore db;
@@ -32,7 +32,7 @@ public class Route {
 
 
 
-    public Route(String lugarInicio, String lugarFin, String horaSalida, int huecos, User usuarioPropietario) {
+    public Route(String lugarInicio, String lugarFin, String horaSalida, int huecos, String usuarioPropietario) {
         this.id_ruta = "";
         this.lugarInicio = lugarInicio;
         this.lugarFin = lugarFin;
@@ -125,11 +125,11 @@ public class Route {
         this.huecos = huecos;
     }
 
-    public User getPropietoario() {
+    public String getPropietoario() {
         return propietoario;
     }
 
-    public void setPropietoario(User propietoario) {
+    public void setPropietoario(String propietoario) {
         this.propietoario = propietoario;
     }
 
