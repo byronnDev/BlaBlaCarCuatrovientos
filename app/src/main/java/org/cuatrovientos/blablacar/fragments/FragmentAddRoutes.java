@@ -61,7 +61,7 @@ public class FragmentAddRoutes extends Fragment {
                         for (DocumentSnapshot document : task.getResult()) {
                             Route route = document.toObject(Route.class);
                             route.setId_ruta(document.getId());
-                             if (hasHuecos(route)) routesList.add(route);
+                            if (hasHuecos(route)) routesList.add(route);
                         }
                         RecyclerDataAdapter routesAdapter = new RecyclerDataAdapter(routesList, new RecyclerDataAdapter.OnItemClickListener() {
                             @Override
