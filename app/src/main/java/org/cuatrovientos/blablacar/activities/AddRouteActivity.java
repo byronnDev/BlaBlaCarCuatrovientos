@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.models.Route;
+import org.cuatrovientos.blablacar.models.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -161,6 +162,7 @@ public Filter getFilter() {
                         route.setLugarInicio("Instituto");
                         route.setLugarFin(streetName);
                     }
+                    User currentAppUser = documentSnapshot.toObject(User.class);
                     route.setHuecos(huecos);
                     route.setFechaCreacion(new Date());
                     Map<String, Object> data = new HashMap<>();
@@ -169,6 +171,9 @@ public Filter getFilter() {
                     data.put("lugarFin", route.getLugarFin());
                     data.put("huecos", route.getHuecos());
                     data.put("fechaCreacion", route.getFechaCreacion());
+                    data.put("usuariosApuntados", new ArrayList<>());
+                    data.put("usuariosBaneados", new ArrayList<>());
+                    data.put("propietario", currentAppUser);
                     Long finalCount = count;
                     db.collection("routes").add(data)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

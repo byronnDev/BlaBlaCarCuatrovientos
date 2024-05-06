@@ -90,19 +90,7 @@ public class FragmentDetails extends Fragment {
     }
 
     public void renderData(int idRuta) {
-        db.collection("routes").document(String.valueOf(idRuta))
-            .get()
-            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    route = documentSnapshot.toObject(Route.class);
-                    // Aquí puedes mostrar los detalles de la ruta
-                    // Por ejemplo, puedes establecer el texto de varios TextView con los datos de la ruta
-                    tvLugarInicio.setText("Lugar de inicio: " + route.getLugarInicio());
-                    tvLugarFin.setText("Lugar de fin: " + route.getLugarFin());
-                    tvHuecos.setText("Huecos disponibles: " + route.getHuecos());
-                }
-            });
+
     }
 
     public interface DataListener {
