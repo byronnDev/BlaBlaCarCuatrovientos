@@ -1,6 +1,8 @@
 package org.cuatrovientos.blablacar.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.CursorWindow;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -17,7 +19,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,16 +32,24 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.activities.Login;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Map;
+import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
 
 public class FragmentProfile extends Fragment {
     private Button btnLogout;
     private TextView nombre;
     private TextView email;
+    private TextView phone;
     private ImageView imgUsuario;
     private TextView o2Points;
 
@@ -55,10 +64,13 @@ public class FragmentProfile extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        fixSizeError(100); // 100MB CursorWindow size limit to avoid SQLiteBlobTooBigException
+
 
         // Initialize views
         nombre = view.findViewById(R.id.txtNombre);
         email = view.findViewById(R.id.txtMail);
+        phone = view.findViewById(R.id.txtPhone);
         imgUsuario = view.findViewById(R.id.imgUsuario);
         o2Points = view.findViewById(R.id.txtO2Points);
         btnLogout = view.findViewById(R.id.btnLogOut);
@@ -79,20 +91,19 @@ public class FragmentProfile extends Fragment {
                 imagePickerLauncher.launch("image/*");
             }
 
-            // Declare an ActivityResultLauncher for image selection
+            // Añadir ActivityResultLauncher para seleccionar imagen de perfil
             ActivityResultLauncher<String> imagePickerLauncher = registerForActivityResult(
                     new ActivityResultContracts.GetContent(),
                     uri -> {
+                        // Handle the returned Uri
                         if (uri != null) {
-                            // Handle the selected image URI here
-                            imgUsuario.setImageURI(uri);
-                            imgUsuario.setClipToOutline(true);
-                            imgUsuario.setBackgroundResource(R.drawable.rounded_corner);
-                            // Ajustar la escala de la imagen para que ocupe todo el espacio dentro del ImageView
-                            imgUsuario.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-                            // Guardamos la url de la imagen en la bbdd en el usuario actual
-                            db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).update("picture", uri);
+                            try {
+                                Bitmap bitmap = BitmapFactory.decodeStream(requireActivity().getContentResolver().openInputStream(uri));
+                                imgUsuario.setImageBitmap(bitmap);
+                                guardarImagenUsuario(bitmap); // Guarda la imagen localmente
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
             );
@@ -101,16 +112,65 @@ public class FragmentProfile extends Fragment {
         return view;
     }
 
+    private static void fixSizeError(int mb) {
+        try {
+            Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
+            field.setAccessible(true);
+            field.set(null, mb * 1024 * 1024); //the 100MB is the new size
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void guardarImagenUsuario(Bitmap bitmap) {
+        // Convierte la imagen a bytes
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] imageData = baos.toByteArray();
+
+        try {
+            // Guarda los bytes de la imagen en un archivo en el almacenamiento interno
+            FileOutputStream fos = requireContext().openFileOutput("profile_image.png", getContext().MODE_PRIVATE);
+            fos.write(imageData);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    // Cargar imagen desde almacenamiento local
+    private Bitmap cargarImagenLocal() {
+        Bitmap bitmap = null;
+        try {
+            // Verifica si el fragmento está adjunto a una actividad
+            if (isAdded()) {
+                // Accede al contexto del fragmento
+                Context context = requireContext();
+                // Lee la imagen desde el archivo en el almacenamiento interno
+                FileInputStream fis = context.openFileInput("profile_image.png");
+                bitmap = BitmapFactory.decodeStream(fis);
+                fis.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
     private void cargarDatosUsuario() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String mail = currentUser.getEmail();
             obtenerDatosUsuario(mail);
+            cargarImagenDesdeAlmacenamientoLocal(); // Carga la imagen desde almacenamiento local
         } else {
             mostrarMensajeError("No hay una sesión activa");
         }
     }
-
+    private void cargarImagenDesdeAlmacenamientoLocal() {
+        Bitmap bitmap = cargarImagenLocal();
+        if (bitmap != null) {
+            imgUsuario.setImageBitmap(bitmap);
+        }
+    }
     private void obtenerDatosUsuario(String mail) {
         CollectionReference usersRef = db.collection("users");
         usersRef.document(mail).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -136,17 +196,14 @@ public class FragmentProfile extends Fragment {
         email.setText(getStringFromMap(userData, "mail"));
         String nombreYApellido = getStringFromMap(userData, "name") + " " + getStringFromMap(userData, "surname");
         nombre.setText(nombreYApellido);
-
-        String imgUrl = getStringFromMap(userData, "picture");
-        Bitmap bitmap = getBitmapFromURL(imgUrl);
-        if (bitmap != null) {
-            imgUsuario.setImageBitmap(bitmap);
-        }
-
-        String o2PointsText = getStringFromMap(userData, "o2Points");
+        phone.setText(getStringFromMap(userData, "phone"));
+        String o2PointsText = getStringFromMap(userData, "O2Points");
         if (!o2PointsText.isEmpty()) {
             o2Points.setText(o2PointsText);
         }
+
+        // Load user profile image
+        cargarDatosUsuario();
     }
 
     private String getStringFromMap(Map<String, Object> map, String key) {
@@ -160,19 +217,6 @@ public class FragmentProfile extends Fragment {
                 Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private Bitmap getBitmapFromURL(String url) {
-        try {
-            URL imageUrl = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) imageUrl.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            return null;
-        }
     }
 
     private void onLogout() {
