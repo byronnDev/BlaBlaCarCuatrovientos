@@ -54,7 +54,7 @@ public class FragmentDetails extends Fragment {
                         route = documentSnapshot.toObject(Route.class);
                         tvLugarInicio.setText(route.getLugarInicio());
                         tvLugarFin.setText(route.getLugarFin());
-                        tvHuecos.setText(route.getHuecos());
+                        tvHuecos.setText(String.valueOf(route.getHuecos()));
                     }
                 });
         btnUnirse.setOnClickListener(new View.OnClickListener() {
