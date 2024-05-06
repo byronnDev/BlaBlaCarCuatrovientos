@@ -7,6 +7,7 @@ public class User {
     private String surname;
     private String mail;
     private String phone;
+    private ArrayList<Route> routes;
     private int O2Points;
     private ArrayList<Route> Routes;//rutas de las que es propietario
     private ArrayList<Route> routesSubscribed;//rutas a las que esta apuntado
@@ -16,17 +17,17 @@ public class User {
         routesSubscribed = new ArrayList<>();
     }
 
-    public User(String name, String surname, String mail, String phone) {
+    public User(String name, String surname, String mail, String phone, int O2Points,
+                ArrayList<Route> routes, ArrayList<Route> routesSubscribed, ArrayList<Route> routesBaned) {
         this.name = name;
         this.surname = surname;
         this.mail = mail;
         this.phone = phone;
-        this.O2Points = 0;
-        this.Routes = new ArrayList<Route>();
-        this.routesSubscribed = new ArrayList<Route>();
-        this.routesBaned = new ArrayList<Route>();
+        this.O2Points = O2Points;
+        this.routes = routes;
+        this.routesSubscribed = routesSubscribed;
+        this.routesBaned = routesBaned;
     }
-
     public String getName() {
         return name;
     }
