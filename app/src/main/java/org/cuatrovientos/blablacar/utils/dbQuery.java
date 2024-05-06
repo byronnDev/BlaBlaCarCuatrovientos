@@ -8,6 +8,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class dbQuery {
     private FirebaseFirestore db;
@@ -33,25 +34,46 @@ public class dbQuery {
         return FirebaseAuth.getInstance().getCurrentUser().getEmail();
     }
 
-    public void getUserDataFromFirestore(String userEmail) {
+    public interface UserDataSuccessListener {
+        void onUserDataReceived(Map<String, Object> userData);
+        void onUserDataError(String errorMessage);
+    }
+
+    public void getUserDataFromFirestore(String userEmail, UserDataSuccessListener listener) {
         db.collection("users")
                 .whereEqualTo("mail", userEmail)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         DocumentSnapshot documentSnapshot = queryDocumentSnapshots.getDocuments().get(0);
-                        HashMap<String, Object> userData = (HashMap<String, Object>) documentSnapshot.getData();
+                        Map<String, Object> userData = documentSnapshot.getData();
                         if (userData != null) {
-                            userDataListener.onUserDataReceived(userData);
+                            listener.onUserDataReceived(userData);
                         } else {
-                            userDataListener.onUserDataError("No se encontraron datos válidos para el usuario.");
+                            listener.onUserDataError("No se encontraron datos válidos para el usuario.");
                         }
                     } else {
-                        userDataListener.onUserDataError("No se encontró ningún usuario con el correo electrónico proporcionado.");
+                        listener.onUserDataError("No se encontró ningún usuario con el correo electrónico proporcionado.");
                     }
                 })
-                .addOnFailureListener(e -> userDataListener.onUserDataError("Error al consultar la base de datos: " + e.getMessage()));
+                .addOnFailureListener(e -> listener.onUserDataError("Error al consultar la base de datos: " + e.getMessage()));
     }
+
+    // Ejemplo de uso
+    /*
+    getUserDataFromFirestore("correo@example.com", new UserDataSuccessListener() {
+        @Override
+        public void onUserDataReceived(Map<String, Object> userData) {
+            // Manejar los datos del usuario aquí
+        }
+
+        @Override
+        public void onUserDataError(String errorMessage) {
+            // Manejar el error aquí
+        }
+    });
+     */
+
 
     private void showErrorToast(String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
