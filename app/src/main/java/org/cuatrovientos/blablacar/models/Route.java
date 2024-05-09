@@ -1,87 +1,43 @@
 package org.cuatrovientos.blablacar.models;
 
-import static android.content.ContentValues.TAG;
-
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-public class Route {
-    private String id_ruta;
-    private String lugarInicio;//son dos coordenadas, separadas por coma
-    private String lugarFin;//son dos coordenadas, separadas por coma
-    private String horaSalida;
+import org.cuatrovientos.blablacar.app.MyApplication;
+
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class Route extends RealmObject {
+    @PrimaryKey
+    private int id_ruta;
+    private String lugarInicio;
+    private String lugarFin;
+    private Date horaSalida;
     private Date fechaCreacion;
     private int huecos;
-    private String propietoario;
-    private ArrayList<User> usuariosApuntados;
-    private ArrayList<User> usuariosBaneados;
-    private FirebaseFirestore db;
+    private String propietoario;//el mail del usuario creador de la ruta
+    private String usuariosApuntados;//los correos de los usuarios que se apuntan separados por ";"
+    private String usuariosBaneados;//los correos de los usuarios baneados en esta ruta
 
-    public Route() {
-        usuariosApuntados = new ArrayList<User>();
-    }
-
-
-
-    public Route(String lugarInicio, String lugarFin, String horaSalida, int huecos, String usuarioPropietario) {
-        this.id_ruta = "";
+    public Route(String propietario,String lugarInicio, String lugarFin, Date horaSalida, int huecos) {
+        this.id_ruta= MyApplication.rutaID.getAndIncrement();
         this.lugarInicio = lugarInicio;
         this.lugarFin = lugarFin;
         this.horaSalida = horaSalida;
-        this.fechaCreacion =  new Date(); //Formato EEE MMM dd HH:mm:ss zzz yyyy
-        //EEE: Día de la semana abreviado (por ejemplo, "Mon" para lunes).
-        //MMM: Mes abreviado (por ejemplo, "Jan" para enero).
-        //dd: Día del mes en formato numérico (por ejemplo, "03" para el tercer día del mes).
-        //HH: Hora en formato de 24 horas.
-        //mm: Minuto.
-        //ss: Segundo.
-        //zzz: Zona horaria.
-        //yyyy: Año.
-        this.propietoario = usuarioPropietario;
         this.huecos = huecos;
-        this.usuariosApuntados = new ArrayList<User>();
-        this.usuariosBaneados = new ArrayList<User>();
-
-
-    }
-    public void apuntarUsuario(User usuario) {
-        if (usuariosApuntados.size() < huecos) {
-            usuariosApuntados.add(usuario);
-        }
-    }
-    public void insertToDatabase(){
-        db = FirebaseFirestore.getInstance();
-        CollectionReference routesRef = db.collection("routes");
-        // Añadir la ruta a la colección "routes"
-        routesRef.add(this)
-        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
-                if (task.isSuccessful()) {
-                    // La operación se realizó con éxito
-                    Log.d(TAG, "Ruta añadida correctamente con ID: " + task.getResult().getId());
-                } else {
-                    // Hubo un error al agregar la ruta
-                    Log.w(TAG, "Error al añadir ruta", task.getException());
-                }
-            }
-        });
+        this.fechaCreacion = new Date();
+        this.propietoario = propietario;
+        this.usuariosApuntados = "";
+        this.usuariosBaneados = "";
     }
 
-    public String getId_ruta() {
+    public int getId_ruta() {
         return id_ruta;
     }
 
-    public void setId_ruta(String id_ruta) {
+    public void setId_ruta(int id_ruta) {
         this.id_ruta = id_ruta;
     }
 
@@ -101,11 +57,11 @@ public class Route {
         this.lugarFin = lugarFin;
     }
 
-    public String getHoraSalida() {
+    public Date getHoraSalida() {
         return horaSalida;
     }
 
-    public void setHoraSalida(String horaSalida) {
+    public void setHoraSalida(Date horaSalida) {
         this.horaSalida = horaSalida;
     }
 
@@ -133,19 +89,50 @@ public class Route {
         this.propietoario = propietoario;
     }
 
-    public ArrayList<User> getUsuariosApuntados() {
+    public String getUsuariosApuntados() {
         return usuariosApuntados;
     }
 
-    public void setUsuariosApuntados(ArrayList<User> usuariosApuntados) {
+    public void setUsuariosApuntados(String usuariosApuntados) {
         this.usuariosApuntados = usuariosApuntados;
     }
 
-    public ArrayList<User> getUsuariosBaneados() {
+    public String getUsuariosBaneados() {
         return usuariosBaneados;
     }
 
-    public void setUsuariosBaneados(ArrayList<User> usuariosBaneados) {
+    public void setUsuariosBaneados(String usuariosBaneados) {
         this.usuariosBaneados = usuariosBaneados;
+    }
+
+    public ArrayList<String> getUsuariosApuntadosEnArrayList(){
+        ArrayList<String> usuariosApuntadosList = new ArrayList<>();
+
+        if (usuariosApuntados != null && !usuariosApuntados.isEmpty()) {
+
+            usuariosApuntadosList = new ArrayList<>(Arrays.asList(usuariosApuntados.split(";")));
+        }
+
+        return usuariosApuntadosList;
+    }
+
+    public void addUsuariosApuntados(String nuevoUsuario){
+        this.usuariosApuntados = this.usuariosApuntados + nuevoUsuario + ";";
+
+    }
+
+    public ArrayList<String> getUsuariosBaneadosEnArrayList(){
+        ArrayList<String> usuariosBaneadosList = new ArrayList<>();
+
+        if (usuariosBaneados != null && !usuariosBaneados.isEmpty()) {
+
+            usuariosBaneadosList = new ArrayList<>(Arrays.asList(usuariosBaneados.split(";")));
+        }
+
+        return usuariosBaneadosList;
+    }
+    public void addUsuariosBaneados(String nuevoUsuario){
+        this.usuariosBaneados = this.usuariosBaneados + nuevoUsuario + ";";
+
     }
 }
