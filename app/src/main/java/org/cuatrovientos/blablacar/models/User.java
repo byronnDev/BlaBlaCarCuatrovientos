@@ -5,6 +5,10 @@ import java.util.Arrays;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+//seguridad de passwords
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
 
 public class User extends RealmObject {
     private String name;
@@ -28,7 +32,7 @@ public class User extends RealmObject {
         this.routesSubscribed = "";
         this.routesBaned = "";
         //TODO hasear la password
-        this.pass = pass;
+        this.pass = hashPassword(pass);
     }
     //geters and setters
     public String getName() {
@@ -86,10 +90,23 @@ public class User extends RealmObject {
     public void setRoutesBaned(String routesBaned) {
         this.routesBaned = routesBaned;
     }
-    //haseamos la password
-    public String hashPass(String pass){
-        return pass;
+    //haseamos la pass con rsha256
+    public String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if(hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error al hashear la contraseña", e);
+        }
     }
+
     //comprobamos si la password es correcta
     public boolean checkPass(String pass) {
         return this.pass.equals(pass);
@@ -141,5 +158,7 @@ public class User extends RealmObject {
     public void addRoutesBaned(String newRoute){
         this.routesBaned = this.routesBaned + newRoute + ";";
     }
+
+
 
 }
