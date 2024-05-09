@@ -25,7 +25,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.adapters.RecyclerDataAdapter;
 import org.cuatrovientos.blablacar.models.Route;
-import org.cuatrovientos.blablacar.utils.dbQuery;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -25,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.models.Route;
 import org.cuatrovientos.blablacar.models.User;
-import org.cuatrovientos.blablacar.utils.dbQuery;
 
 
 public class FragmentDetails extends Fragment {

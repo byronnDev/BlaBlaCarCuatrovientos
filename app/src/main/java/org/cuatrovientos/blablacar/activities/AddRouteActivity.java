@@ -2,12 +2,10 @@ package org.cuatrovientos.blablacar.activities;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -19,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.type.DateTime;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.models.Route;
@@ -27,7 +24,6 @@ import org.cuatrovientos.blablacar.models.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.cuatrovientos.blablacar.utils.dbQuery;
 
 
 import java.io.IOException;
