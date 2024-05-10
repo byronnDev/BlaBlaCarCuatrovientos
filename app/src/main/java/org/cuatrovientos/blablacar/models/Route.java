@@ -22,7 +22,10 @@ public class Route extends RealmObject {
     private RealmList<String> usuariosApuntados;//los correos de los usuarios que se apuntan separados por ";"
     private RealmList<String> usuariosBaneados;//los correos de los usuarios baneados en esta ruta
 
-    public Route(String propietario,String lugarInicio, String lugarFin, Date horaSalida, Integer huecos) {
+    public Route() {
+    }
+
+    public Route(String propietario, String lugarInicio, String lugarFin, Date horaSalida, Integer huecos) {
         this.id_ruta= MyApplication.rutaID.getAndIncrement();
         this.lugarInicio = lugarInicio;
         this.lugarFin = lugarFin;

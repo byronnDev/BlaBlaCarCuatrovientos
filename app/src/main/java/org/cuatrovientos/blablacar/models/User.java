@@ -23,7 +23,10 @@ public class User extends RealmObject {
     private RealmList<Integer> routesSubscribed;//rutas a las que esta apuntado
     private RealmList<Integer> routesBaned;//rutas en las que esta baneado;
 
-    public User(String name, String surname, String mail,String pass, String phone) {
+    public User() {
+    }
+
+    public User(String name, String surname, String mail, String pass, String phone) {
         this.name = name;
         this.surname = surname;
         this.mail = mail;
