@@ -3,6 +3,7 @@ package org.cuatrovientos.blablacar.models;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 //seguridad de passwords
@@ -17,10 +18,10 @@ public class User extends RealmObject {
     private String mail;
     private String pass;
     private String phone;
-    private int o2Points;
-    private String routesPropietario;//rutas de las que es propietario
-    private String routesSubscribed;//rutas a las que esta apuntado
-    private String routesBaned;//rutas en las que esta baneado;
+    private Integer o2Points;
+    private RealmList<Integer> routesPropietario;//rutas de las que es propietario
+    private RealmList<Integer> routesSubscribed;//rutas a las que esta apuntado
+    private RealmList<Integer> routesBaned;//rutas en las que esta baneado;
 
     public User(String name, String surname, String mail,String pass, String phone) {
         this.name = name;
@@ -28,9 +29,9 @@ public class User extends RealmObject {
         this.mail = mail;
         this.phone = phone;
         this.o2Points = 0;
-        this.routesPropietario = "";
-        this.routesSubscribed = "";
-        this.routesBaned = "";
+        this.routesPropietario = new RealmList<>();
+        this.routesSubscribed = new RealmList<>();
+        this.routesBaned = new RealmList<>();
         //TODO hasear la password
         this.pass = hashPassword(pass);
     }
@@ -66,30 +67,37 @@ public class User extends RealmObject {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-    public int getO2Points() {
+    public Integer getO2Points() {
         return o2Points;
     }
-    public void setO2Points(int o2Points) {
+    public void setO2Points(Integer o2Points) {
         this.o2Points = o2Points;
     }
-    public String getRoutesPropietario() {
+
+    public RealmList<Integer> getRoutesPropietario() {
         return routesPropietario;
     }
-    public void setRoutesPropietario(String routesPropietario) {
+
+    public void setRoutesPropietario(RealmList<Integer> routesPropietario) {
         this.routesPropietario = routesPropietario;
     }
-    public String getRoutesSubscribed() {
+
+    public RealmList<Integer> getRoutesSubscribed() {
         return routesSubscribed;
     }
-    public void setRoutesSubscribed(String routesSubscribed) {
+
+    public void setRoutesSubscribed(RealmList<Integer> routesSubscribed) {
         this.routesSubscribed = routesSubscribed;
     }
-    public String getRoutesBaned() {
+
+    public RealmList<Integer> getRoutesBaned() {
         return routesBaned;
     }
-    public void setRoutesBaned(String routesBaned) {
+
+    public void setRoutesBaned(RealmList<Integer> routesBaned) {
         this.routesBaned = routesBaned;
     }
+
     //haseamos la pass con rsha256
     public String hashPassword(String password) {
         try {
@@ -112,52 +120,52 @@ public class User extends RealmObject {
         return this.pass.equals(pass);
     }
     //comvertir las rutas en un arraylist
-    public ArrayList<String> getRoutesPropietarioEnArrayList(){
-        ArrayList<String> routesPropietarioList = new ArrayList<>();
+    //public ArrayList<String> getRoutesPropietarioEnArrayList(){
+    //    ArrayList<String> routesPropietarioList = new ArrayList<>();
 
-        if (routesPropietario != null && !routesPropietario.isEmpty()) {
+    //    if (routesPropietario != null && !routesPropietario.isEmpty()) {
 
-            routesPropietarioList = new ArrayList<>(Arrays.asList(routesPropietario.split(";")));
-        }
+    //        routesPropietarioList = new ArrayList<>(Arrays.asList(routesPropietario.split(";")));
+    //    }
 
-        return routesPropietarioList;
-    }
+    //    return routesPropietarioList;
+    //}
     //convertir las rutas en un arraylist
-    public ArrayList<String> getRoutesSubscribedEnArrayList(){
-        ArrayList<String> routesSubscribedList = new ArrayList<>();
+    //public ArrayList<String> getRoutesSubscribedEnArrayList(){
+    //    ArrayList<String> routesSubscribedList = new ArrayList<>();
 
-        if (routesSubscribed != null && !routesSubscribed.isEmpty()) {
+    //    if (routesSubscribed != null && !routesSubscribed.isEmpty()) {
 
-            routesSubscribedList = new ArrayList<>(Arrays.asList(routesSubscribed.split(";")));
-        }
+    //        routesSubscribedList = new ArrayList<>(Arrays.asList(routesSubscribed.split(";")));
+    //    }
 
-        return routesSubscribedList;
-    }
+    //    return routesSubscribedList;
+    //}
     //convertir rutas en las que esta baneado;
-    public ArrayList<String> getRoutesBanedEnArrayList(){
-        ArrayList<String> routesBanedList = new ArrayList<>();
+    //public ArrayList<String> getRoutesBanedEnArrayList(){
+    //    ArrayList<String> routesBanedList = new ArrayList<>();
 
-        if (routesBaned != null && !routesBaned.isEmpty()) {
+    //    if (routesBaned != null && !routesBaned.isEmpty()) {
 
-            routesBanedList = new ArrayList<>(Arrays.asList(routesBaned.split(";")));
-        }
+    //        routesBanedList = new ArrayList<>(Arrays.asList(routesBaned.split(";")));
+    //    }
 
-        return routesBanedList;
-    }
+     //   return routesBanedList;
+    //}
     //añadir rutas a las que esta apuntado
-    public void addRoutesSubscribed(String newRoute){
-        this.routesSubscribed = this.routesSubscribed + newRoute + ";";
-    }
+    //public void addRoutesSubscribed(String newRoute){
+    //    this.routesSubscribed = this.routesSubscribed + newRoute + ";";
+    //}
 
     //añadir rutas de las que es propietario
-    public void addRoutesPropietario(String newRoute){
-        this.routesPropietario = this.routesPropietario + newRoute + ";";
-    }
+    //public void addRoutesPropietario(String newRoute){
+    //    this.routesPropietario = this.routesPropietario + newRoute + ";";
+    //}
 
     //añadir rutas en las que esta baneado
-    public void addRoutesBaned(String newRoute){
-        this.routesBaned = this.routesBaned + newRoute + ";";
-    }
+    //public void addRoutesBaned(String newRoute){
+    //    this.routesBaned = this.routesBaned + newRoute + ";";
+    //}
 
 
 
