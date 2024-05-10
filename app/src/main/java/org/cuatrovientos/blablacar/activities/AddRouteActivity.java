@@ -92,12 +92,10 @@ public class AddRouteActivity extends AppCompatActivity {
                                 @Override
                                 public void onFailure(Call call, IOException e) {
                                     e.printStackTrace();
-                                    // Manejo de excepciones en caso de fallo en la llamada a la API
-                                    filterResults.values = new ArrayList<String>(); // Lista vacía para evitar errores
+                                    // Handle exceptions in case of API call failure
+                                    filterResults.values = new ArrayList<String>(); // Empty list to avoid errors
                                     filterResults.count = 0;
-                                    synchronized (filterResults) {
-                                        filterResults.notifyAll();
-                                    }
+                                    notifyAdapter(filterResults);
                                 }
 
                                 @Override
@@ -116,39 +114,40 @@ public class AddRouteActivity extends AppCompatActivity {
                                                 JSONArray coords = feature.getJSONObject("geometry").getJSONArray("coordinates");
                                                 coordinates.put(streetName, new String[]{coords.getString(1), coords.getString(0)});
                                             }
+                                            filterResults.values = streets;
+                                            filterResults.count = streets.size();
+                                            notifyAdapter(filterResults);
                                         } catch (JSONException e) {
                                             e.printStackTrace();
-                                            // Manejo de excepciones en caso de error al procesar la respuesta JSON
-                                            filterResults.values = new ArrayList<String>(); // Lista vacía para evitar errores
+                                            // Handle exceptions in case of JSON processing error
+                                            filterResults.values = new ArrayList<String>(); // Empty list to avoid errors
                                             filterResults.count = 0;
-                                            synchronized (filterResults) {
-                                                filterResults.notifyAll();
-                                            }
+                                            notifyAdapter(filterResults);
                                         }
                                     }
                                 }
                             });
-                            // Esperar hasta que se haya completado la llamada a la API y se haya procesado la respuesta
-                            synchronized (filterResults) {
-                                try {
-                                    filterResults.wait(3000); // Tiempo máximo de espera en milisegundos
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            filterResults.values = streets;
-                            filterResults.count = streets.size();
                         }
                         return filterResults;
                     }
 
                     @Override
                     protected void publishResults(CharSequence constraint, FilterResults results) {
-                        if (results != null && results.count > 0) {
-                            notifyDataSetChanged();
-                        } else {
-                            notifyDataSetInvalidated();
-                        }
+                        // No need to implement this method here, as we're notifying the adapter from onResponse and onFailure methods
+                    }
+
+                    // Method to notify the adapter on the main thread
+                    private void notifyAdapter(FilterResults filterResults) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (filterResults != null && filterResults.count > 0) {
+                                    notifyDataSetChanged();
+                                } else {
+                                    notifyDataSetInvalidated();
+                                }
+                            }
+                        });
                     }
                 };
             }
