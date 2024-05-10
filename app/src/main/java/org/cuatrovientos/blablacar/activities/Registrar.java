@@ -47,7 +47,11 @@ public class Registrar extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isInputValid()) registerUser();
+
+                if (isInputValid()) {
+                    registerUser();
+                }
+
             }
         });
     }
@@ -66,17 +70,32 @@ public class Registrar extends AppCompatActivity {
     }
 
     private void goHome() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, Login.class);
         startActivity(intent);
         finish();
     }
 
     private boolean isInputValid() {
-        return !TextUtils.isEmpty(txtName.getText().toString())
-                && !TextUtils.isEmpty(txtSurname.getText().toString())
-                && isEmailValid(txtMail.getText().toString())
-                && isPasswordValid(txtPass.getText().toString())
-                && isPhoneValid(txtPhone.getText().toString());
+        boolean bool = true;
+        if(txtName.getText().toString() == null || txtName.getText().toString().isEmpty()){
+            return false;
+        }
+        if(txtSurname.getText().toString() == null || txtSurname.getText().toString().isEmpty()){
+            return false;
+        }
+        if(isEmailExist(txtMail.getText().toString())){
+            return false;
+        }
+        if(txtMail.getText().toString().isEmpty() || txtMail.getText().toString() == null){
+            return false;
+        }
+        if(isPasswordValid(txtPass.getText().toString())){
+            return false;
+        }
+        if(isPasswordValid(txtPhone.getText().toString())){
+            return false;
+        }
+        return true;
     }
 
     private boolean isPhoneValid(String phone) {
@@ -93,7 +112,7 @@ public class Registrar extends AppCompatActivity {
         return true;
     }
 
-    private boolean isEmailValid(String email) {
+    private boolean isEmailExist(String email) {
         User user = realm.where(User.class).equalTo("mail", email).findFirst();
         if (user != null){
             return true;

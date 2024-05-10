@@ -59,7 +59,8 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
         tvLugarInicio.setText(tvLugarInicio.getText() + route.getLugarInicio());
         tvLugarFin.setText(tvLugarFin.getText() + route.getLugarFin());
         tvHuecos.setText(tvHuecos.getText() + String.valueOf(route.getHuecos()));
-        tvHoraSalida.setText(route.getHoraSalida());
+        //TODO setear vien, lo que regresa es un Date
+        //tvHoraSalida.setText(route.getHoraSalida());
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

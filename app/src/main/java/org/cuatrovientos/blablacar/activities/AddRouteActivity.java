@@ -49,21 +49,21 @@ public class AddRouteActivity extends AppCompatActivity {
     private Map<String, String[]> coordinates;
     private ArrayAdapter<String> adapter;
     private String API_KEY = "5b3ce3597851110001cf6248972084980f0c4a449993375528b81e72";
-    private FirebaseFirestore db;
+
     private String[] instituteCoordinates = {"42.82437732771406", "-1.6598058201633434"};
     private ImageButton btnSave;
     private EditText etStreetNumber;
     private EditText etHuecos;
     private EditText etHoraSalida;
-    private dbQuery dbQuery;
+
     private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_route);
 
-        db = FirebaseFirestore.getInstance();
-        dbQuery = new dbQuery(this);
+
+
 
         actvStreetName = findViewById(R.id.editTextcalle);
         tvLatitude = findViewById(R.id.tvLatitude);
@@ -156,76 +156,12 @@ public class AddRouteActivity extends AppCompatActivity {
 
         actvStreetName.setAdapter(adapter);
 
-        dbQuery.getUserDataFromFirestore(dbQuery.getCurrentUserEmail(), new org.cuatrovientos.blablacar.utils.dbQuery.UserDataSuccessListener() {
-            @Override
-            public void onUserDataReceived(User userData) {
-                user = userData;
-            }
 
-            @Override
-            public void onUserDataError(String errorMessage) {
-                // Manejar el error aquí
-            }
-        });
         btnSave.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
 
-        db.collection("counters").document("routes")
-            .get()
-            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    Long count = documentSnapshot.getLong("count");
-                    if (count == null) {
-                        count = 0L;
-                    }
-                    String streetName = actvStreetName.getText().toString();
-                    int huecos = 0;
-                    try {
-                        huecos = Integer.parseInt(etHuecos.getText().toString());
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
-                        // Mostrar un mensaje al usuario indicando que el número de huecos no es válido
-                        return;
-                    }
-                    Route route = new Route();
-                    if (switchTipoRuta.isChecked()) {
-                        route.setLugarInicio(streetName);
-                        route.setLugarFin("Instituto");
-                    } else {
-                        route.setLugarInicio("Instituto");
-                        route.setLugarFin(streetName);
-                    }
-                    String horaSalida = etHoraSalida.getText().toString();
 
-//                    User currentAppUser = documentSnapshot.toObject(User.class);
-                    route.setHuecos(huecos);
-                    route.setFechaCreacion(new Date());
-                    route.setHoraSalida(horaSalida);
-
-
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("id", route.getId_ruta());
-                    data.put("lugarInicio", route.getLugarInicio());
-                    data.put("lugarFin", route.getLugarFin());
-                    data.put("horaSalida", route.getHoraSalida());
-                    data.put("huecos", route.getHuecos());
-                    data.put("fechaCreacion", route.getFechaCreacion());
-                    data.put("usuariosApuntados", new ArrayList<User>());
-                    data.put("usuariosBaneados", new ArrayList<User>());
-                    data.put("propietario", FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                    Long finalCount = count;
-                    db.collection("routes").add(data)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                // Incrementa el contador solo después de que se ha creado con éxito el nuevo documento
-                                db.collection("counters").document("routes").update("count", finalCount + 1);
-                            }
-                        });
-                }
-            });
     }
 });
 

@@ -35,7 +35,7 @@ public class FragmentAddRoutes extends Fragment {
     RecyclerView recyclerView;
     DataListener callback;
     ImageButton btnAddRoute;
-    FirebaseFirestore db;
+
 
     public FragmentAddRoutes() {
         // Required empty public constructor
@@ -49,37 +49,9 @@ public class FragmentAddRoutes extends Fragment {
         this.btnAddRoute = (ImageButton) view.findViewById(R.id.btnAddInnerRoute);
         this.recyclerView = (RecyclerView) view.findViewById(R.id.recyclerRutas);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
-        this.db = FirebaseFirestore.getInstance();
 
-        db.collection("routes")
-            .get()
-            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        routesList.clear(); // Limpiar la lista antes de agregar nuevas rutas
-                        for (DocumentSnapshot document : task.getResult()) {
-                            Route route = document.toObject(Route.class);
-                            route.setId_ruta(document.getId());
-                            if (hasHuecos(route)) routesList.add(route);
-                        }
-                        RecyclerDataAdapter routesAdapter = new RecyclerDataAdapter(routesList, new RecyclerDataAdapter.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(Route conten) {
-                                String idRoute = conten.getId_ruta();
-                                callback.sendData(idRoute);
-                            }
-                        });
-                        recyclerView.setAdapter(routesAdapter);
-                    } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
-                    }
-                }
 
-                private boolean hasHuecos(Route route) {
-                    return route.getHuecos() > 0;
-                }
-            });
+
 
         this.btnAddRoute.setOnClickListener(new View.OnClickListener() {
             @Override

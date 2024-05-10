@@ -34,7 +34,7 @@ public class FragmentYourRoutes extends Fragment {
     RecyclerView recyclerView;
     List<Route> routesList = new ArrayList<Route>();
     DataListener callback;
-    FirebaseFirestore db;
+
 
     public FragmentYourRoutes() {
         // Required empty public constructor
@@ -46,39 +46,9 @@ public class FragmentYourRoutes extends Fragment {
         View view = inflater.inflate(R.layout.fragment_your_routes, container, false);
         this.recyclerView = (RecyclerView) view.findViewById(R.id.tusRutas);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
-        this.db = FirebaseFirestore.getInstance();
 
-        db.collection("routes")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            routesList.clear(); // Limpiar la lista antes de agregar nuevas rutas
-                            for (DocumentSnapshot document : task.getResult()) {
-                                Route route = document.toObject(Route.class);
-                                // Por alguna razón no pilla el propietario por defecto. Así que se lo asigno de prueba
-                                route.setPropietoario(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail());
-                                route.setId_ruta(document.getId());
-                                if (hasHuecos(route) && isCurrentUserRoute(route)) routesList.add(route);
-                            }
-                            RecyclerDataAdapter routesAdapter = new RecyclerDataAdapter(routesList, new RecyclerDataAdapter.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(Route conten) {
-                                    String idRoute = conten.getId_ruta();
-                                    callback.sendData(idRoute);
-                                }
-                            });
-                            recyclerView.setAdapter(routesAdapter);
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
 
-                    private boolean hasHuecos(Route route) {
-                        return route.getHuecos() > 0;
-                    }
-                });
+
 
         return view;
     }

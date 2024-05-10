@@ -28,13 +28,13 @@ import org.cuatrovientos.blablacar.models.User;
 
 
 public class FragmentDetails extends Fragment {
-    private FirebaseFirestore db;
+
     private Button btnUnirse;
     private Route route;
     private TextView tvLugarInicio;
     private TextView tvLugarFin;
     private TextView tvHuecos;
-    private org.cuatrovientos.blablacar.utils.dbQuery dbQuery;
+
     private User user;
 
     @Nullable
@@ -42,8 +42,7 @@ public class FragmentDetails extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
 
-        db = FirebaseFirestore.getInstance();
-        dbQuery = new dbQuery(getContext());
+
         btnUnirse = view.findViewById(R.id.btnUnirse);
         tvLugarInicio = view.findViewById(R.id.tvLugarInicio);
         tvLugarFin = view.findViewById(R.id.tvLugarFin);
@@ -53,29 +52,9 @@ public class FragmentDetails extends Fragment {
     }
 
     public void renderData(String idRuta) {
-        dbQuery.getUserDataFromFirestore(dbQuery.getCurrentUserEmail(), new org.cuatrovientos.blablacar.utils.dbQuery.UserDataSuccessListener() {
-            @Override
-            public void onUserDataReceived(User userData) {
-                user = userData;
-            }
 
-            @Override
-            public void onUserDataError(String errorMessage) {
-                // Manejar el error aquí
-            }
-        });
 
-        db.collection("routes").document(String.valueOf(idRuta))
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        route = documentSnapshot.toObject(Route.class);
-                        tvLugarInicio.setText(route.getLugarInicio());
-                        tvLugarFin.setText(route.getLugarFin());
-                        tvHuecos.setText(String.valueOf(route.getHuecos()));
-                    }
-                });
+
 
         btnUnirse.setOnClickListener(new View.OnClickListener() {
     @Override
