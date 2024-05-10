@@ -1,7 +1,7 @@
 buildscript {
     dependencies {
         classpath("com.google.gms:google-services:4.4.1")
-        classpath("io.realm:realm-gradle-plugin:10.15.1")
+        classpath("io.realm:realm-gradle-plugin:10.18.0")
     }
 }
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
