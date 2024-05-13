@@ -21,17 +21,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.activities.Login;
-import org.cuatrovientos.blablacar.models.LoguedUser;
 import org.cuatrovientos.blablacar.models.User;
 
 import java.io.ByteArrayOutputStream;
@@ -39,7 +30,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Map;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class FragmentProfile extends Fragment {
     private Button btnLogout;
@@ -49,12 +42,12 @@ public class FragmentProfile extends Fragment {
     private TextView phone;
     private ImageView imgUsuario;
     private TextView o2Points;
-
-
+    private User loggedUser;
+    private Realm realm;
+    ActivityResultLauncher<String> imagePickerLauncher;
 
     public FragmentProfile() {
         // Required empty public constructor
-
     }
 
     @Override
@@ -63,56 +56,135 @@ public class FragmentProfile extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         fixSizeError(100); // 100MB CursorWindow size limit to avoid SQLiteBlobTooBigException
 
-
-        // Initialize views
-        nombre = (TextView) view.findViewById(R.id.txtNombre);
-        username = (TextView) view.findViewById(R.id.username);
-        email = (TextView) view.findViewById(R.id.txtMail);
-        phone = (TextView) view.findViewById(R.id.txtPhone);
-        imgUsuario = (ImageView) view.findViewById(R.id.imgUsuario);
-        o2Points = (TextView) view.findViewById(R.id.txtO2Points);
-        btnLogout = (Button) view.findViewById(R.id.btnLogOut);
-
-        User logedUser = LoguedUser.getUser();
-
-        nombre.setText(logedUser.getName().toString());
-        username.setText(logedUser.getName().toString() + " " + logedUser.getSurname().toString());
-        email.setText(logedUser.getMail().toString());
-        phone.setText(logedUser.getPhone().toString());
-        o2Points.setText(logedUser.getO2Points().toString());
-
-        //recicler con las rutas del propietario
-
-
-
+        setup(view);
+        cargarDatosUsuario();
         onLogout();
+        imageSetFunction();
 
         return view;
     }
 
-    private static void fixSizeError(int mb) {
-        try {
-            Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
-            field.setAccessible(true);
-            field.set(null, mb * 1024 * 1024); //the 100MB is the new size
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void setup(View view) {
+        nombre = view.findViewById(R.id.txtNombre);
+        username = view.findViewById(R.id.username);
+        email = view.findViewById(R.id.txtMail);
+        phone = view.findViewById(R.id.txtPhone);
+        imgUsuario = view.findViewById(R.id.imgUsuario);
+        o2Points = view.findViewById(R.id.txtO2Points);
+        btnLogout = view.findViewById(R.id.btnLogOut);
+        realm = Realm.getDefaultInstance();
+
+        // Initialize the image picker launcher
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri != null) {
+                        try {
+                            Bitmap bitmap = BitmapFactory.decodeStream(requireActivity().getContentResolver().openInputStream(uri));
+                            imgUsuario.setImageBitmap(bitmap);
+                            guardarImagenUsuario(bitmap); // Save the user's image locally
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        );
     }
 
     private void onLogout() {
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoguedUser.setUser(new User());
-                FirebaseAuth.getInstance().signOut();
-                returnLoginActivity();
-            }
+        btnLogout.setOnClickListener(v -> {
+            realm.executeTransaction(r -> {
+                // Clear the logged-in user's data
+                r.where(User.class).findAll().deleteAllFromRealm();
+            });
+            returnLoginActivity();
         });
     }
 
     private void returnLoginActivity() {
         Intent intent = new Intent(requireContext(), Login.class);
         startActivity(intent);
+        getActivity().finish();
+    }
+
+    private void cargarDatosUsuario() {
+        // Load the user from Realm; replace this with your logic to identify the logged-in user
+        loggedUser = realm.where(User.class).findFirst();
+
+        if (loggedUser != null) {
+            nombre.setText(loggedUser.getName());
+            username.setText(loggedUser.getName() + " " + loggedUser.getSurname());
+            email.setText(loggedUser.getMail());
+            phone.setText(loggedUser.getPhone());
+            if (loggedUser.getO2Points() != null) {
+                o2Points.setText(String.valueOf(loggedUser.getO2Points()));
+            } else {
+                o2Points.setText("N/A");
+            }
+
+            cargarImagenDesdeAlmacenamientoLocal(); // Load the image from local storage
+        } else {
+            mostrarMensajeError("No hay una sesión activa");
+        }
+    }
+
+    private void guardarImagenUsuario(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] imageData = baos.toByteArray();
+
+        try {
+            FileOutputStream fos = requireContext().openFileOutput("profile_image.png", Context.MODE_PRIVATE);
+            fos.write(imageData);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Bitmap cargarImagenLocal() {
+        Bitmap bitmap = null;
+        try {
+            FileInputStream fis = requireContext().openFileInput("profile_image.png");
+            bitmap = BitmapFactory.decodeStream(fis);
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarMensajeError("Error al cargar la imagen");
+        }
+        return bitmap;
+    }
+
+    private void cargarImagenDesdeAlmacenamientoLocal() {
+        Bitmap bitmap = cargarImagenLocal();
+        if (bitmap != null) {
+            imgUsuario.setImageBitmap(bitmap);
+        }
+    }
+
+    private void imageSetFunction() {
+        // Handle image click to select a new image
+        imgUsuario.setOnClickListener(v -> abrirSelectorImagen());
+    }
+
+    private void abrirSelectorImagen() {
+        // Launch the image picker
+        imagePickerLauncher.launch("image/*");
+    }
+
+    private static void fixSizeError(int mb) {
+        try {
+            Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
+            field.setAccessible(true);
+            field.set(null, mb * 1024 * 1024); // the 100MB is the new size
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void mostrarMensajeError(String mensaje) {
+        new Handler(Looper.getMainLooper()).post(() ->
+                Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show()
+        );
     }
 }
