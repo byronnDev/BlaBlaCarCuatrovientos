@@ -35,7 +35,7 @@
         android:layout_marginStart="12dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="aA123456!"
+        android:text="Qwerty123."
         app:layout_constraintBottom_toBottomOf="@+id/LoginLblContraseña"
         app:layout_constraintStart_toEndOf="@+id/LoginLblContraseña"
         app:layout_constraintTop_toTopOf="@+id/LoginLblContraseña"
