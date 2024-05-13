@@ -105,6 +105,7 @@ public class FragmentProfile extends Fragment {
             @Override
             public void onClick(View v) {
                 LoguedUser.setUser(new User());
+                FirebaseAuth.getInstance().signOut();
                 returnLoginActivity();
             }
         });
