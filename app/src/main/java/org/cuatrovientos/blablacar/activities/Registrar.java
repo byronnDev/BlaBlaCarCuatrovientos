@@ -1,27 +1,18 @@
 package org.cuatrovientos.blablacar.activities;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import android.widget.Toast;
 
-
-
 import org.cuatrovientos.blablacar.R;
-
 import org.cuatrovientos.blablacar.models.User;
 
-
-
 import io.realm.Realm;
-
 
 public class Registrar extends AppCompatActivity {
     private EditText txtName;
@@ -30,9 +21,7 @@ public class Registrar extends AppCompatActivity {
     private EditText txtPass;
     private EditText txtPhone;
     private Button btnRegister;
-    Realm realm;
-
-
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,25 +36,35 @@ public class Registrar extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (isInputValid()) {
                     registerUser();
                 }
-
             }
         });
     }
+
     private void registerUser() {
-        String name = txtName.getText().toString();
-        String surname = txtSurname.getText().toString();
-        String mail = txtMail.getText().toString();
+        String name = txtName.getText().toString().trim();
+        String surname = txtSurname.getText().toString().trim();
+        String mail = txtMail.getText().toString().trim();
         String pass = txtPass.getText().toString();
-        String phone = txtPhone.getText().toString();
-        User user = new User(name,surname,mail,pass,phone);
-        realm.beginTransaction();
-        realm.copyToRealm(user);
-        realm.commitTransaction();
-        realm.close();
+        String phone = txtPhone.getText().toString().trim();
+
+        if (isEmailExist(mail)) {
+            showErrorToast("Este email ya está registrado. Por favor, usa otro.");
+            return;
+        }
+
+        realm.executeTransaction(r -> {
+            // Create a new User object
+            User user = r.createObject(User.class, mail);  // Ensure your User class has a primary key
+            user.setName(name);
+            user.setSurname(surname);
+            user.setPass(User.hashPassword(pass));
+            user.setPhone(phone);
+        });
+
+        Toast.makeText(this, "Usuario registrado con éxito!", Toast.LENGTH_SHORT).show();
         goHome();
     }
 
@@ -76,23 +75,30 @@ public class Registrar extends AppCompatActivity {
     }
 
     private boolean isInputValid() {
-        boolean bool = true;
-        if(txtName.getText().toString() == null || txtName.getText().toString().isEmpty()){
+        String name = txtName.getText().toString().trim();
+        String surname = txtSurname.getText().toString().trim();
+        String mail = txtMail.getText().toString().trim();
+        String pass = txtPass.getText().toString();
+        String phone = txtPhone.getText().toString().trim();
+
+        if (name.isEmpty()) {
+            showErrorToast("Por favor, introduce un nombre.");
             return false;
         }
-        if(txtSurname.getText().toString() == null || txtSurname.getText().toString().isEmpty()){
+        if (surname.isEmpty()) {
+            showErrorToast("Por favor, introduce un apellido.");
             return false;
         }
-        if(isEmailExist(txtMail.getText().toString())){
+        if (mail.isEmpty()) {
+            showErrorToast("Por favor, introduce un email.");
             return false;
         }
-        if(txtMail.getText().toString().isEmpty() || txtMail.getText().toString() == null){
+        if (!isPasswordValid(pass)) {
+            // showErrorToast called within isPasswordValid
             return false;
         }
-        if(isPasswordValid(txtPass.getText().toString())){
-            return false;
-        }
-        if(isPasswordValid(txtPhone.getText().toString())){
+        if (!isPhoneValid(phone)) {
+            // showErrorToast called within isPhoneValid
             return false;
         }
         return true;
@@ -114,10 +120,7 @@ public class Registrar extends AppCompatActivity {
 
     private boolean isEmailExist(String email) {
         User user = realm.where(User.class).equalTo("mail", email).findFirst();
-        if (user != null){
-            return true;
-        }
-        return false;
+        return user != null;
     }
 
     private boolean isPasswordValid(String password) {
@@ -131,20 +134,18 @@ public class Registrar extends AppCompatActivity {
             return false;
         }
 
-        // Caracter especial, número y mayúscula
-        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$")) {
+        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{6,}$")) {
             showErrorToast("La contraseña debe tener al menos un número, una mayúscula y un carácter especial.");
             return false;
         }
 
-        if (password.contains(" ")){
-            showErrorToast("La contraseña no puede neten espacios en blanco.");
+        if (password.contains(" ")) {
+            showErrorToast("La contraseña no puede contener espacios en blanco.");
             return false;
         }
 
         return true;
     }
-
 
     private void setup() {
         txtName = (EditText) findViewById(R.id.txtName);
