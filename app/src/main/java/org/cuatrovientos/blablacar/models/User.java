@@ -102,7 +102,7 @@ public class User extends RealmObject {
     }
 
     //haseamos la pass con rsha256
-    public String hashPassword(String password) {
+    public static String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
