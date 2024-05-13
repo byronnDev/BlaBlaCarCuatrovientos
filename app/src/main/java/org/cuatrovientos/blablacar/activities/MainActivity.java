@@ -1,5 +1,7 @@
 package org.cuatrovientos.blablacar.activities;
 
+import static org.cuatrovientos.blablacar.utils.Utils.getDummyData;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +18,13 @@ import org.cuatrovientos.blablacar.fragments.FragmentAddRoutes;
 import org.cuatrovientos.blablacar.fragments.FragmentHome;
 import org.cuatrovientos.blablacar.fragments.FragmentProfile;
 import org.cuatrovientos.blablacar.fragments.FragmentYourRoutes;
+import org.cuatrovientos.blablacar.models.User;
+
+import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView
         .OnItemSelectedListener, FragmentAddRoutes.DataListener, FragmentYourRoutes.DataListener {
@@ -24,13 +33,17 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     FragmentAddRoutes addRoutesView = new FragmentAddRoutes();
     FragmentYourRoutes yourRoutesView = new FragmentYourRoutes();
     FragmentProfile profileView = new FragmentProfile();
-    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        db = FirebaseFirestore.getInstance(); // Inicializar Firestore
+//        Realm.init(this);
+//        RealmConfiguration config = new RealmConfiguration.Builder()
+//                .name("myrealm.realm")
+//                .allowWritesOnUiThread(true)
+//                .build();
+//        Realm.setDefaultConfiguration(config);
 
         setDefaultHomeSelectedInNav();
     }
