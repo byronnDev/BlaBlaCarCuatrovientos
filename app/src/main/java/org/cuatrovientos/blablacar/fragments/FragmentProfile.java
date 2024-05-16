@@ -93,10 +93,7 @@ public class FragmentProfile extends Fragment {
 
     private void onLogout() {
         btnLogout.setOnClickListener(v -> {
-            realm.executeTransaction(r -> {
-                // Clear the logged-in user's data
-                r.where(User.class).findAll().deleteAllFromRealm();
-            });
+            loggedUser = null; // Clear the logged user
             returnLoginActivity();
         });
     }
