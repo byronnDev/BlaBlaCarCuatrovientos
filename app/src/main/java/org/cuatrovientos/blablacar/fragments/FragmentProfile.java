@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.activities.Login;
+import org.cuatrovientos.blablacar.models.LoguedUser;
 import org.cuatrovientos.blablacar.models.User;
 
 import java.io.ByteArrayOutputStream;
@@ -106,7 +107,7 @@ public class FragmentProfile extends Fragment {
 
     private void cargarDatosUsuario() {
         // Load the user from Realm; replace this with your logic to identify the logged-in user
-        loggedUser = realm.where(User.class).findFirst();
+        loggedUser = LoguedUser.StaticLogedUser.getUser();
 
         if (loggedUser != null) {
             nombre.setText(loggedUser.getName());
