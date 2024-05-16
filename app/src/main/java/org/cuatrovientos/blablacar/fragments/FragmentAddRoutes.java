@@ -16,86 +16,134 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.adapters.RecyclerDataAdapter;
+import org.cuatrovientos.blablacar.models.LoguedUser;
 import org.cuatrovientos.blablacar.models.Route;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class FragmentAddRoutes extends Fragment {
 
-    List<Route> routesList = new ArrayList<Route>();
+    List<Route> routesList = new ArrayList<>();
     RecyclerView recyclerView;
     DataListener callback;
     ImageButton btnAddRoute;
     Realm realm;
-    public RealmResults<Route> realmResults;
-
+    RealmResults<Route> realmResults;
+    boolean isFiltering;
+    boolean isUserFilter;
 
     public FragmentAddRoutes() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_routes, container, false);
         realm = Realm.getDefaultInstance();
-        this.btnAddRoute = (ImageButton) view.findViewById(R.id.btnAddInnerRoute);
-        this.recyclerView = (RecyclerView) view.findViewById(R.id.recyclerRutas);
+        isFiltering = false;
+        isUserFilter = false;
+        btnAddRoute = view.findViewById(R.id.btnAddInnerRoute);
+        recyclerView = view.findViewById(R.id.recyclerRutas);
 
-
-
-        realmResults = realm.where(Route.class).findAll();
-        RecyclerDataAdapter routeAdapter =new RecyclerDataAdapter(realmResults, new RecyclerDataAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Route conten) {
-                String idRoute = conten.getId().toString();
-                callback.sendData(idRoute);
+        String location = null;
+        // Obtener el propietario y la fecha seleccionada del Bundle
+        String propietario = getArguments() != null ? getArguments().getString("propietario") : null;
+        String dateString = getArguments() != null ? getArguments().getString("selectedDate") : null;
+        Date selectedDate = null;
+        if (getArguments() != null) {
+            location = getArguments().getString("location");
+            if (selectedDate != null && location != null) {
+                selectedDate = parseDate(dateString);
+                Log.d(TAG, "onCreateView: " + selectedDate);
+                Log.d(TAG, "onCreateView: " + location);
+                isFiltering = true;
             }
+
+            if (propietario != null) {
+                isUserFilter = true;
+            }
+        }
+
+        if (isFiltering && selectedDate != null && location != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(selectedDate);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            Date startOfDay = calendar.getTime();
+
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            Date endOfDay = calendar.getTime();
+
+            realmResults = realm.where(Route.class)
+                    .contains("lugarInicio", location, Case.INSENSITIVE)
+                    .greaterThanOrEqualTo("horaSalida", startOfDay)
+                    .lessThan("horaSalida", endOfDay)
+                    .findAll();
+
+        } else if (isUserFilter) {
+            // Filtrar por usuario logueado aquí si el argumento propietario está presente
+            if (propietario != null) {
+                realmResults = realm.where(Route.class)
+                        .equalTo("propietario", propietario, Case.INSENSITIVE)
+                        .findAll();
+            } else {
+                realmResults = realm.where(Route.class)
+                        .equalTo("propietario", LoguedUser.StaticLogedUser.getUser().getMail(), Case.INSENSITIVE)
+                        .findAll();
+            }
+        } else {
+            realmResults = realm.where(Route.class).findAll();
+        }
+
+        RecyclerDataAdapter routeAdapter = new RecyclerDataAdapter(realmResults, conten -> {
+            String idRoute = conten.getId().toString();
+            callback.sendData(idRoute);
         });
 
-        this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
-        this.recyclerView.setAdapter(routeAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(routeAdapter);
 
-
-
-        this.btnAddRoute.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callback.addRoute();
-            }
-        });
+        btnAddRoute.setOnClickListener(v -> callback.addRoute());
 
         return view;
+    }
+
+    private Date parseDate(String dateString) {
+        SimpleDateFormat format = new SimpleDateFormat("dd / M / yyyy");
+        try {
+            return format.parse(dateString);
+        } catch (ParseException e) {
+            Log.e(TAG, "Error parsing date: " + dateString, e);
+            return null;
+        }
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
         try {
             callback = (DataListener) context;
-        }
-        catch (Exception e){
-            throw new ClassCastException(context.toString() + "should implement DataListener");
+        } catch (Exception e) {
+            throw new ClassCastException(context.toString() + " should implement DataListener");
         }
     }
 
     public interface DataListener {
         void sendData(String idRuta);
-
         void addRoute();
     }
 }
