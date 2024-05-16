@@ -2,7 +2,6 @@ package org.cuatrovientos.blablacar.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -12,11 +11,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import org.cuatrovientos.blablacar.R;
 import java.util.Calendar;
 
 public class FragmentHome extends Fragment {
     public EditText etPlannedDate;
+    public EditText txtStartLocation;
     Button btnFind;
 
     public FragmentHome() {
@@ -33,6 +35,7 @@ public class FragmentHome extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         etPlannedDate = view.findViewById(R.id.etPlannedDate);
         btnFind = view.findViewById(R.id.btnFind);
+        txtStartLocation = view.findViewById(R.id.txtStart);
 
         etPlannedDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,13 +48,16 @@ public class FragmentHome extends Fragment {
         btnFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isCamposCorrectos()) return;
+
                 // Crear una instancia del FragmentAddRoutes
                 FragmentAddRoutes fragmentAddRoutes = new FragmentAddRoutes();
 
                 // Pasar la fecha seleccionada como un argumento al FragmentAddRoutes
                 Bundle bundle = new Bundle();
                 bundle.putString("selectedDate", etPlannedDate.getText().toString());
-                // TODO: Pasar el resto de los datos necesarios
+                // Pasar location que es el txtStartLocation
+                bundle.putString("location", txtStartLocation.getText().toString());
                 fragmentAddRoutes.setArguments(bundle);
 
                 // Realizar la transacción del fragmento
@@ -64,6 +70,17 @@ public class FragmentHome extends Fragment {
         });
 
         return view;
+    }
+
+    private boolean isCamposCorrectos() {
+        if (etPlannedDate.getText().toString().isEmpty()) {
+            Toast.makeText(getContext(), "Campo fecha obligatorio", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (txtStartLocation.getText().toString().isEmpty()) {
+            Toast.makeText(getContext(), "Campo origen obligatorio", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     // Clase DatePickerFragment
