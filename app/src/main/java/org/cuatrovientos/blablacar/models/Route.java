@@ -1,7 +1,5 @@
 package org.cuatrovientos.blablacar.models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 import org.cuatrovientos.blablacar.app.MyApplication;
@@ -18,7 +16,7 @@ public class Route extends RealmObject {
     private Date horaSalida;
     private Date fechaCreacion;
     private Integer huecos;
-    private String propietoario;//el mail del usuario creador de la ruta
+    private String propietario;//el mail del usuario creador de la ruta
     private RealmList<String> usuariosApuntados;//los correos de los usuarios que se apuntan separados por ";"
     private RealmList<String> usuariosBaneados;//los correos de los usuarios baneados en esta ruta
 
@@ -32,7 +30,7 @@ public class Route extends RealmObject {
         this.horaSalida = horaSalida;
         this.huecos = huecos;
         this.fechaCreacion = new Date();
-        this.propietoario = propietario;
+        this.propietario = propietario;
         this.usuariosApuntados = new RealmList<>();
         this.usuariosBaneados = new RealmList<>();
     }
@@ -85,12 +83,12 @@ public class Route extends RealmObject {
         this.huecos = huecos;
     }
 
-    public String getPropietoario() {
-        return propietoario;
+    public String getPropietario() {
+        return propietario;
     }
 
-    public void setPropietoario(String propietoario) {
-        this.propietoario = propietoario;
+    public void setPropietario(String propietario) {
+        this.propietario = propietario;
     }
 
     public RealmList<String> getUsuariosApuntados() {
