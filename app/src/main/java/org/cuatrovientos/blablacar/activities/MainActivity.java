@@ -18,6 +18,7 @@ import org.cuatrovientos.blablacar.fragments.FragmentAddRoutes;
 import org.cuatrovientos.blablacar.fragments.FragmentHome;
 import org.cuatrovientos.blablacar.fragments.FragmentProfile;
 import org.cuatrovientos.blablacar.fragments.FragmentYourRoutes;
+import org.cuatrovientos.blablacar.models.LoguedUser;
 import org.cuatrovientos.blablacar.models.User;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //User UserTest = LoguedUser.StaticLogedUser.getUser();
 //        Realm.init(this);
 //        RealmConfiguration config = new RealmConfiguration.Builder()
 //                .name("myrealm.realm")
@@ -113,8 +115,10 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         return itemId == R.id.home;
     }
 
+
     @Override
     public void sendData(String idRuta) {
+
         Intent intent = new Intent(MainActivity.this,RoutesActivity.class);
         intent.putExtra("id",idRuta);
         startActivity(intent);

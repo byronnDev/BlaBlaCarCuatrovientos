@@ -12,7 +12,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class Route extends RealmObject {
     @PrimaryKey
-    private Integer id_ruta;
+    private Integer id;
     private String lugarInicio;
     private String lugarFin;
     private Date horaSalida;
@@ -26,7 +26,7 @@ public class Route extends RealmObject {
     }
 
     public Route(String propietario, String lugarInicio, String lugarFin, Date horaSalida, Integer huecos) {
-        this.id_ruta= MyApplication.rutaID.getAndIncrement();
+        this.id= MyApplication.rutaID.getAndIncrement();
         this.lugarInicio = lugarInicio;
         this.lugarFin = lugarFin;
         this.horaSalida = horaSalida;
@@ -37,12 +37,12 @@ public class Route extends RealmObject {
         this.usuariosBaneados = new RealmList<>();
     }
 
-    public Integer getId_ruta() {
-        return id_ruta;
+    public Integer getId() {
+        return id;
     }
 
-    public void setId_ruta(Integer id_ruta) {
-        this.id_ruta = id_ruta;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getLugarInicio() {

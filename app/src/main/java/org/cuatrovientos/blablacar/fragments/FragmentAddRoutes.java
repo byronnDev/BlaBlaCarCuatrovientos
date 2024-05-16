@@ -29,12 +29,17 @@ import org.cuatrovientos.blablacar.models.Route;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class FragmentAddRoutes extends Fragment {
 
     List<Route> routesList = new ArrayList<Route>();
     RecyclerView recyclerView;
     DataListener callback;
     ImageButton btnAddRoute;
+    Realm realm;
+    public RealmResults<Route> realmResults;
 
 
     public FragmentAddRoutes() {
@@ -46,10 +51,23 @@ public class FragmentAddRoutes extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_routes, container, false);
+        realm = Realm.getDefaultInstance();
         this.btnAddRoute = (ImageButton) view.findViewById(R.id.btnAddInnerRoute);
         this.recyclerView = (RecyclerView) view.findViewById(R.id.recyclerRutas);
-        this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
 
+
+
+        realmResults = realm.where(Route.class).findAll();
+        RecyclerDataAdapter routeAdapter =new RecyclerDataAdapter(realmResults, new RecyclerDataAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Route conten) {
+                String idRoute = conten.getId().toString();
+                callback.sendData(idRoute);
+            }
+        });
+
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false));
+        this.recyclerView.setAdapter(routeAdapter);
 
 
 

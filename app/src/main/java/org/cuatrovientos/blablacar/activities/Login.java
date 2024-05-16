@@ -1,6 +1,7 @@
 package org.cuatrovientos.blablacar.activities;
 
 import static org.cuatrovientos.blablacar.utils.Utils.getDummyData;
+import static org.cuatrovientos.blablacar.utils.Utils.getDummyDataRoutes;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AlertDialog;
@@ -38,18 +39,22 @@ public class Login extends AppCompatActivity {
         txtUser = (EditText) findViewById(R.id.txtMail);
         txtPass = (EditText) findViewById(R.id.txtPass);
 
+        //Realm.deleteRealm(Realm.getDefaultConfiguration());
         realm = Realm.getDefaultInstance();
-
-//        purgeData(); // TODO: Eliminar esta línea en producción
+        purgeData(); // TODO: Eliminar esta línea en producción
         chargeDummy();
+
+
 
         setupSignInButtons(); // Configura los botones de inicio de sesión
     }
     private void chargeDummy() {
+
         userList = realm.where(User.class).findAll();
         if (userList.size() == 0) {
             realm.beginTransaction();
             realm.copyToRealm(getDummyData());
+            realm.copyToRealm(getDummyDataRoutes());
             realm.commitTransaction();
         }
         realm.close();
@@ -95,7 +100,7 @@ public class Login extends AppCompatActivity {
             User user = realm.where(User.class).equalTo("mail", userEmail).findFirst();
             if (user != null && user.getPass().equals(User.hashPassword(password))) {
                 // Guardar el usuario logueado
-                LoguedUser.setUser(user);
+                LoguedUser.StaticLogedUser.setUser(user);
                 // Si el usuario existe y la contraseña es correcta
                 goHome();
             } else {
@@ -104,7 +109,7 @@ public class Login extends AppCompatActivity {
             }
         } finally {
             // Asegúrate de cerrar Realm en el hilo actual
-            realm.close();
+            //realm.close();
         }
     }
 

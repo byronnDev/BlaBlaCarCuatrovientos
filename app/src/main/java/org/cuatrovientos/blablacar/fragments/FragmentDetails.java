@@ -3,6 +3,7 @@ package org.cuatrovientos.blablacar.fragments;
 import static androidx.fragment.app.FragmentManager.TAG;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,8 +25,13 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.cuatrovientos.blablacar.R;
+import org.cuatrovientos.blablacar.activities.MainActivity;
+import org.cuatrovientos.blablacar.models.LoguedUser;
 import org.cuatrovientos.blablacar.models.Route;
 import org.cuatrovientos.blablacar.models.User;
+
+import io.realm.Realm;
+import io.realm.RealmList;
 
 
 public class FragmentDetails extends Fragment {
@@ -34,6 +41,7 @@ public class FragmentDetails extends Fragment {
     private TextView tvLugarInicio;
     private TextView tvLugarFin;
     private TextView tvHuecos;
+    private Realm realm;
 
     private User user;
 
@@ -43,78 +51,55 @@ public class FragmentDetails extends Fragment {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
 
 
-        btnUnirse = view.findViewById(R.id.btnUnirse);
-        tvLugarInicio = view.findViewById(R.id.tvLugarInicio);
-        tvLugarFin = view.findViewById(R.id.tvLugarFin);
-        tvHuecos = view.findViewById(R.id.tvHuecos);
+        btnUnirse = (Button) view.findViewById(R.id.btnUnirse);
+        tvLugarInicio = (TextView) view.findViewById(R.id.tvLugarInicio);
+        tvLugarFin = (TextView)view.findViewById(R.id.tvLugarFin);
+        tvHuecos = (TextView)view.findViewById(R.id.tvHuecos);
 
         return view;
     }
 
     public void renderData(String idRuta) {
-
-
-
+        realm = Realm.getDefaultInstance();
+        route = realm.where(Route.class).equalTo("id", Integer.parseInt(idRuta)).findFirst();
+        user = LoguedUser.StaticLogedUser.getUser();
 
         btnUnirse.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        // Obtén una instancia de FirebaseFirestore
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+            @Override
+            public void onClick(View v) {
+                //realm = Realm.getDefaultInstance();
+                // Define la ID de la ruta que deseas agregar al usuario
+                String idRutapuntarse = idRuta; // Reemplaza con el ID real de la ruta que deseas agregar
 
-        // Define la ID de la ruta que deseas agregar al usuario
-        String idRutapuntarse = idRuta; // Reemplaza con el ID real de la ruta que deseas agregar
+                // Define el correo del usuario que desea unirse a la ruta
+                String correoUsuario = user.getMail();
 
-        // Define el correo del usuario que desea unirse a la ruta
-        String correoUsuario = user.getMail();
+                if(route.getUsuariosApuntados().contains(correoUsuario)){
+                    Toast.makeText(getContext(), "Ya estás apuntado a esta ruta", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                RealmList<String> listaUsuariosApuntados = route.getUsuariosApuntados();
+                listaUsuariosApuntados.add(correoUsuario);
+                route.setUsuariosApuntados(listaUsuariosApuntados);
 
-        // Obtén una referencia al documento del usuario con el correo especificado
-        DocumentReference usuarioRef = db.collection("users").document(correoUsuario);
+                RealmList<Integer> listaRutasApuntados = user.getRoutesSubscribed();
+                listaRutasApuntados.add(Integer.parseInt(idRutapuntarse));
+                user.setRoutesSubscribed(listaRutasApuntados);
 
-        // Obtén una referencia al documento de la ruta con la ID especificada
-        DocumentReference rutaRef = db.collection("routes").document(idRutapuntarse);
+                //Actualizar en la base de datos
+                realm.beginTransaction();
+                realm.copyToRealmOrUpdate(user);
+                realm.copyToRealmOrUpdate(route);
+                realm.commitTransaction();
 
-        // Actualiza el array routesSubscribed del documento del usuario con el ID de la nueva ruta
-        usuarioRef.update("routesSubscribed", FieldValue.arrayUnion(idRutapuntarse))
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @SuppressLint("RestrictedApi")
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // La ruta se agregó exitosamente al array routesSubscribed del usuario
-                        Log.d(TAG, "ID de ruta agregada al array routesSubscribed del usuario correctamente");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @SuppressLint("RestrictedApi")
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Maneja cualquier error que ocurra al agregar el ID de la ruta al array routesSubscribed del usuario
-                        Log.w(TAG, "Error al agregar el ID de ruta al array routesSubscribed del usuario", e);
-                    }
-                });
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
 
-        // Actualiza el array usuariosApuntados del documento de la ruta con el correo del nuevo usuario
-        rutaRef.update("usuariosApuntados", FieldValue.arrayUnion(correoUsuario))
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @SuppressLint("RestrictedApi")
-                    @Override
-                    public void onSuccess(Void aVoid) {
 
-                        // El correo del usuario se agregó exitosamente al array usuariosApuntados de la ruta
-                        Log.d(TAG, "Correo de usuario agregado al array usuariosApuntados de la ruta correctamente");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @SuppressLint("RestrictedApi")
 
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Maneja cualquier error que ocurra al agregar el correo del usuario al array usuariosApuntados de la ruta
-                        Log.w(TAG, "Error al agregar el correo de usuario al array usuariosApuntados de la ruta", e);
-                    }
-                });
-    }
-});
     }
 
     public interface DataListener {

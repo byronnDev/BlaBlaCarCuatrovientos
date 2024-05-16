@@ -2,6 +2,7 @@ package org.cuatrovientos.blablacar.activities;
 
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import org.cuatrovientos.blablacar.R;
@@ -19,7 +20,8 @@ public class RoutesActivity extends FragmentActivity implements FragmentDetails.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_routes);
-        String idRuta = getIntent().getStringExtra("id");
+        Intent intent = getIntent();
+        String idRuta = intent.getStringExtra("id");
         FragmentDetails detailsFragment = (FragmentDetails) getSupportFragmentManager().findFragmentById(R.id.detailsFragment);
         detailsFragment.renderData(idRuta);
     }
