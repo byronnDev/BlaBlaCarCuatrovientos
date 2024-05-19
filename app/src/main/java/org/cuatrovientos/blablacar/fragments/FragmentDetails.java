@@ -35,27 +35,24 @@ import io.realm.RealmList;
 
 
 public class FragmentDetails extends Fragment {
-
     private Button btnUnirse;
     private Route route;
     private TextView tvLugarInicio;
     private TextView tvLugarFin;
     private TextView tvHuecos;
+    private TextView tvHoraSalida;
     private Realm realm;
-
     private User user;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
-
-
-        btnUnirse = (Button) view.findViewById(R.id.btnUnirse);
-        tvLugarInicio = (TextView) view.findViewById(R.id.tvLugarInicio);
-        tvLugarFin = (TextView)view.findViewById(R.id.tvLugarFin);
-        tvHuecos = (TextView)view.findViewById(R.id.tvHuecos);
-
+        btnUnirse = view.findViewById(R.id.btnUnirse);
+        tvLugarInicio = view.findViewById(R.id.tvLugarInicio);
+        tvLugarFin = view.findViewById(R.id.tvLugarFin);
+        tvHuecos = view.findViewById(R.id.tvHuecos);
+        tvHoraSalida = view.findViewById(R.id.tvHoraSalida);
         return view;
     }
 
@@ -64,46 +61,50 @@ public class FragmentDetails extends Fragment {
         route = realm.where(Route.class).equalTo("id", Integer.parseInt(idRuta)).findFirst();
         user = LoguedUser.StaticLogedUser.getUser();
 
+        tvLugarInicio.setText(tvLugarInicio.getText()+ route.getLugarInicio());
+        tvLugarFin.setText(tvLugarFin.getText()+ route.getLugarFin());
+        tvHuecos.setText(tvHuecos.getText()+ String.valueOf(route.getHuecos()));
+        tvHoraSalida.setText(tvHoraSalida.getText()+ String.valueOf(route.getHoraSalida().getHours())+":"+String.valueOf(route.getHoraSalida().getMinutes()));
         btnUnirse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //realm = Realm.getDefaultInstance();
-                // Define la ID de la ruta que deseas agregar al usuario
-                String idRutapuntarse = idRuta; // Reemplaza con el ID real de la ruta que deseas agregar
-
-                // Define el correo del usuario que desea unirse a la ruta
-                String correoUsuario = user.getMail();
-
-                if(route.getUsuariosApuntados().contains(correoUsuario)){
-                    Toast.makeText(getContext(), "Ya estás apuntado a esta ruta", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                RealmList<String> listaUsuariosApuntados = route.getUsuariosApuntados();
-                listaUsuariosApuntados.add(correoUsuario);
-                route.setUsuariosApuntados(listaUsuariosApuntados);
-
-                RealmList<Integer> listaRutasApuntados = user.getRoutesSubscribed();
-                listaRutasApuntados.add(Integer.parseInt(idRutapuntarse));
-                user.setRoutesSubscribed(listaRutasApuntados);
-
-                //Actualizar en la base de datos
-                realm.beginTransaction();
-                realm.copyToRealmOrUpdate(user);
-                realm.copyToRealmOrUpdate(route);
-                realm.commitTransaction();
-
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+        @Override
+        public void onClick(View v) {
+            // Comprobar si el usuario ya está apuntado a la ruta
+            if(route.getUsuariosApuntados().contains(user.getMail())){
+                Toast.makeText(getContext(), "Ya estás apuntado a esta ruta", Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
 
+            // Comprobar si hay huecos disponibles en la ruta
+            if(route.getHuecos() <= 0){
+                Toast.makeText(getContext(), "No hay huecos disponibles en esta ruta", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
+            // Iniciar una transacción de escritura
+            realm.beginTransaction();
 
+            // Añadir el correo del usuario a la lista de usuarios apuntados de la ruta
+            RealmList<String> listaUsuariosApuntados = route.getUsuariosApuntados();
+            if (listaUsuariosApuntados == null) {
+                listaUsuariosApuntados = new RealmList<>();
+            }
+            listaUsuariosApuntados.add(user.getMail());
+
+            //añadimos 100 puntos al usuario
+            user.setO2Points(user.getO2Points() + 100);
+
+            // Restar 1 al número de huecos de la ruta
+            route.setHuecos(route.getHuecos() - 1);
+
+            // Confirmar la transacción de escritura
+            realm.commitTransaction();
+
+            Toast.makeText(getContext(), "Te has apuntado a la ruta + (100 O2-Points)", Toast.LENGTH_SHORT).show();
+        }
+    });
     }
 
     public interface DataListener {
         void sendData(int idRuta);
-
     }
 }

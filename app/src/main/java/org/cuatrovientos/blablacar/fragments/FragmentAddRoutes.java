@@ -54,7 +54,7 @@ public class FragmentAddRoutes extends Fragment {
         realm = Realm.getDefaultInstance();
         isFiltering = false;
         isUserFilter = false;
-        btnAddRoute = view.findViewById(R.id.btnAddInnerRoute);
+        btnAddRoute = view.findViewById(R.id.btnAddRoute);
         recyclerView = view.findViewById(R.id.recyclerRutas);
 
         String location = null;

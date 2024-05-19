@@ -6,33 +6,50 @@
 
     <TextView
         android:id="@+id/tvLugarInicio"
-        android:layout_width="wrap_content"
+        android:layout_width="364dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="26dp"
         android:text="Lugar de inicio: "
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/tvHoraSalida"
+        android:layout_width="361dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="142dp"
+        android:layout_marginEnd="23dp"
+        android:text="Hora Salida : "
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvLugarFin"
-        android:layout_width="wrap_content"
+        android:layout_width="360dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvLugarInicio"
-        android:layout_marginTop="19dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="61dp"
+        android:layout_marginEnd="27dp"
         android:text="Lugar de fin: "
         android:textSize="18sp"
         android:textStyle="bold" />
 
-
     <TextView
         android:id="@+id/tvHuecos"
-        android:layout_width="wrap_content"
+        android:layout_width="361dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvLugarFin"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="306dp"
-        android:text="Lugar de fin: "
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="24dp"
+        android:text="Huecos: "
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -42,8 +59,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tvLugarFin"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="150dp"
-        android:layout_marginTop="65dp"
+        android:layout_marginStart="155dp"
+        android:layout_marginTop="165dp"
         android:text="Unirse"
         android:textSize="18sp" />
 

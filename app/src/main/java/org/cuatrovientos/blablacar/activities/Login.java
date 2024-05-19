@@ -41,6 +41,8 @@ public class Login extends AppCompatActivity {
 
         //Realm.deleteRealm(Realm.getDefaultConfiguration());
         realm = Realm.getDefaultInstance();
+
+        //TODO: comentar este codigo cuando tengas ya la base de datos cargada que sino te cargara siempre los datos de prueba y no guardara los datos nuevos
         purgeData(); // TODO: Eliminar esta línea en producción
         chargeDummy();
 

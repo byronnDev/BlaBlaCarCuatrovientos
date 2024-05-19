@@ -122,28 +122,28 @@ public class User extends RealmObject {
     public boolean checkPass(String pass) {
         return this.pass.equals(pass);
     }
-    //comvertir las rutas en un arraylist
-    //public ArrayList<String> getRoutesPropietarioEnArrayList(){
-    //    ArrayList<String> routesPropietarioList = new ArrayList<>();
-
-    //    if (routesPropietario != null && !routesPropietario.isEmpty()) {
-
-    //        routesPropietarioList = new ArrayList<>(Arrays.asList(routesPropietario.split(";")));
-    //    }
-
-    //    return routesPropietarioList;
-    //}
-    //convertir las rutas en un arraylist
-    //public ArrayList<String> getRoutesSubscribedEnArrayList(){
-    //    ArrayList<String> routesSubscribedList = new ArrayList<>();
-
-    //    if (routesSubscribed != null && !routesSubscribed.isEmpty()) {
-
-    //        routesSubscribedList = new ArrayList<>(Arrays.asList(routesSubscribed.split(";")));
-    //    }
-
-    //    return routesSubscribedList;
-    //}
+//    comvertir las rutas en un arraylist
+//    public ArrayList<String> getRoutesPropietarioEnArrayList(){
+//        ArrayList<String> routesPropietarioList = new ArrayList<>();
+//
+//        if (routesPropietario != null && !routesPropietario.isEmpty()) {
+//
+//            routesPropietarioList = new ArrayList<>(Arrays.asList(routesPropietario.split(";")));
+//        }
+//
+//        return routesPropietarioList;
+//    }
+//    convertir las rutas en un arraylist
+//    public ArrayList<String> getRoutesSubscribedEnArrayList(){
+//        ArrayList<String> routesSubscribedList = new ArrayList<>();
+//
+//        if (routesSubscribed != null && !routesSubscribed.isEmpty()) {
+//
+//            routesSubscribedList = new ArrayList<>(Arrays.asList(routesSubscribed.split(";")));
+//        }
+//
+//        return routesSubscribedList;
+//    }
     //convertir rutas en las que esta baneado;
     //public ArrayList<String> getRoutesBanedEnArrayList(){
     //    ArrayList<String> routesBanedList = new ArrayList<>();

@@ -9,16 +9,13 @@ import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import org.cuatrovientos.blablacar.R;
+import org.cuatrovientos.blablacar.app.MyApplication;
+import org.cuatrovientos.blablacar.models.LoguedUser;
 import org.cuatrovientos.blablacar.models.Route;
 import org.cuatrovientos.blablacar.models.User;
 import org.json.JSONArray;
@@ -33,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.realm.Realm;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -69,7 +67,7 @@ public class AddRouteActivity extends AppCompatActivity {
         tvLatitude = findViewById(R.id.tvLatitude);
         tvLongitude = findViewById(R.id.tvLongitude);
         switchTipoRuta = findViewById(R.id.switch1);
-        btnSave = findViewById(R.id.btnAddInnerRoute);
+        btnSave = findViewById(R.id.btnAddRoute);
         etStreetNumber = findViewById(R.id.editTextNCalle);
         etHuecos = findViewById(R.id.editTextHuecos);
         etHoraSalida = findViewById(R.id.editTextHoraSalida);
@@ -156,11 +154,51 @@ public class AddRouteActivity extends AppCompatActivity {
         actvStreetName.setAdapter(adapter);
 
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
+       btnSave.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
+        // Crear una nueva instancia de Route
+        final Route route = new Route();
+        route.setId(MyApplication.rutaID.incrementAndGet()); // Asigna un ID único a la ruta
 
+        // Verificar el estado del Switch
+        if (switchTipoRuta.isChecked()) {
+            // Si el Switch está activado, la ruta es de Cuatrovientos a la calle seleccionada
+            route.setLugarInicio("Cuatrovientos");
+            route.setLugarFin(actvStreetName.getText().toString());
+        } else {
+            // Si el Switch está desactivado, la ruta es de la calle seleccionada a Cuatrovientos
+            route.setLugarInicio(actvStreetName.getText().toString());
+            route.setLugarFin("Cuatrovientos");
+        }
 
+        route.setHoraSalida(new Date()); // Usa la fecha y hora actual
+        route.setHuecos(Integer.parseInt(etHuecos.getText().toString())); // Configura el número de huecos
+        route.setPropietario(LoguedUser.StaticLogedUser.getUser().getMail()); // Configura el propietario de la ruta como el usuario logueado
+
+        // Ejecutar la operación de escritura en un hilo en segundo plano
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Obtener una instancia de Realm en este hilo
+                Realm realm = Realm.getDefaultInstance();
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.copyToRealm(route);
+                    }
+                });
+                realm.close();
+            }
+        }).start();
+
+        // Mostrar un mensaje de éxito
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(AddRouteActivity.this, "Ruta guardada con éxito", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 });
 

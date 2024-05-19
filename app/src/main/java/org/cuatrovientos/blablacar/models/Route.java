@@ -107,21 +107,21 @@ public class Route extends RealmObject {
         this.usuariosBaneados = usuariosBaneados;
     }
 
-    //public ArrayList<String> getUsuariosApuntadosEnArrayList(){
-    //    ArrayList<String> usuariosApuntadosList = new ArrayList<>();
+//    public ArrayList<String> getUsuariosApuntadosEnArrayList(){
+//        ArrayList<String> usuariosApuntadosList = new ArrayList<>();
+//
+//        if (usuariosApuntados != null && !usuariosApuntados.isEmpty()) {
+//
+//            usuariosApuntadosList = new ArrayList<>(Arrays.asList(usuariosApuntados.split(";")));
+//        }
+//
+//        return usuariosApuntadosList;
+//    }
 
-    //    if (usuariosApuntados != null && !usuariosApuntados.isEmpty()) {
-
-    //        usuariosApuntadosList = new ArrayList<>(Arrays.asList(usuariosApuntados.split(";")));
-    //    }
-
-    //    return usuariosApuntadosList;
-    //}
-
-    //public void addUsuariosApuntados(String nuevoUsuario){
-    //  this.usuariosApuntados = this.usuariosApuntados + nuevoUsuario + ";";
-
-    //}
+//    public void addUsuariosApuntados(String nuevoUsuario){
+//      this.usuariosApuntados = this.usuariosApuntados + nuevoUsuario + ";";
+//
+//    }
 
     //public ArrayList<String> getUsuariosBaneadosEnArrayList(){
     //    ArrayList<String> usuariosBaneadosList = new ArrayList<>();
