@@ -30,6 +30,7 @@ import java.util.List;
 
 import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 public class FragmentAddRoutes extends Fragment {
@@ -51,6 +52,7 @@ public class FragmentAddRoutes extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_routes, container, false);
+
         realm = Realm.getDefaultInstance();
         isFiltering = false;
         isUserFilter = false;
@@ -106,7 +108,10 @@ public class FragmentAddRoutes extends Fragment {
                         .findAll();
             }
         } else {
-            realmResults = realm.where(Route.class).findAll();
+            //Filtro con los baneos aqui
+            //RealmResults<Route> realmResultsAll= realm.where(Route.class).findAll();
+            realmResults = realm.where(Route.class).not().in("usuariosBaneados", new String[]{LoguedUser.StaticLogedUser.getUser().getMail().toString()}).findAll();
+
         }
 
         RecyclerDataAdapter routeAdapter = new RecyclerDataAdapter(realmResults, conten -> {
@@ -146,4 +151,6 @@ public class FragmentAddRoutes extends Fragment {
         void sendData(String idRuta);
         void addRoute();
     }
+
+
 }

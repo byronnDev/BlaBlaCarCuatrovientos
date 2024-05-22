@@ -26,9 +26,9 @@ public class Utils {
         Route route2 = new Route("test1@test.com", "Ciudad C", "Ciudad D", new Date(), 2);
         Route route3 = new Route("test2@test.com", "Ciudad E", "Ciudad F", new Date(), 4);
 
-        RealmList<String> usuariosBaneados = route1.getUsuariosBaneados();
+        RealmList<String> usuariosBaneados = route2.getUsuariosBaneados();
         usuariosBaneados.add("test@test.com");
-        route1.setUsuariosBaneados(usuariosBaneados);
+        route2.setUsuariosBaneados(usuariosBaneados);
         // Agregar las rutas a la lista
         routeList.add(route1);
         routeList.add(route2);
