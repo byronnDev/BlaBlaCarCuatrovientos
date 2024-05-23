@@ -47,7 +47,6 @@ public class AddRouteActivity extends AppCompatActivity {
     private Map<String, String[]> coordinates;
     private ArrayAdapter<String> adapter;
     private String API_KEY = "5b3ce3597851110001cf6248972084980f0c4a449993375528b81e72";
-
     private String[] instituteCoordinates = {"42.82437732771406", "-1.6598058201633434"};
     private ImageButton btnSave;
     private EditText etStreetNumber;

@@ -16,14 +16,22 @@ import org.cuatrovientos.blablacar.models.Route;
 
 import java.util.List;
 
+import io.realm.RealmList;
+
 public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapter.RecyclerDataHolder>{
     List<Route> listaDeElementos;
     OnItemClickListener itemListener;
+
+    public RecyclerDataAdapter(RealmList<String> usuariosApuntados) {
+
+    }
 
     public RecyclerDataAdapter(List<Route> lista, OnItemClickListener listener){
         listaDeElementos = lista;
         itemListener = listener;
     }
+
+
 
     @NonNull
     @Override
