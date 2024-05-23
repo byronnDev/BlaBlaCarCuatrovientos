@@ -46,21 +46,19 @@ public class AddRouteActivity extends AppCompatActivity {
     private List<String> streets;
     private Map<String, String[]> coordinates;
     private ArrayAdapter<String> adapter;
-    private String API_KEY = "5b3ce3597851110001cf6248972084980f0c4a449993375528b81e72";
+    private final String API_KEY = "5b3ce3597851110001cf6248972084980f0c4a449993375528b81e72";
     private String[] instituteCoordinates = {"42.82437732771406", "-1.6598058201633434"};
     private ImageButton btnSave;
     private EditText etStreetNumber;
     private EditText etHuecos;
-    private EditText etHoraSalida;
+    private EditText etHoraSalida; //TODO: cambiar a TimePicker | cambiar a string al propiedad de la clase Route
+    private TextView textoTipoRuta;
 
     private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_route);
-
-
-
 
         actvStreetName = findViewById(R.id.editTextcalle);
         tvLatitude = findViewById(R.id.tvLatitude);
@@ -70,9 +68,9 @@ public class AddRouteActivity extends AppCompatActivity {
         etStreetNumber = findViewById(R.id.editTextNCalle);
         etHuecos = findViewById(R.id.editTextHuecos);
         etHoraSalida = findViewById(R.id.editTextHoraSalida);
+        textoTipoRuta = findViewById(R.id.textoTipoRuta);
         streets = new ArrayList<>();
         coordinates = new HashMap<>();
-
 
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, streets) {
             public Filter getFilter() {
@@ -149,57 +147,58 @@ public class AddRouteActivity extends AppCompatActivity {
                 };
             }
         };
-
         actvStreetName.setAdapter(adapter);
 
 
        btnSave.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        // Crear una nueva instancia de Route
-        final Route route = new Route();
-        route.setId(MyApplication.rutaID.incrementAndGet()); // Asigna un ID único a la ruta
+        @Override
+        public void onClick(View v) {
+            // Crear una nueva instancia de Route
+            final Route route = new Route();
+            route.setId(MyApplication.rutaID.incrementAndGet()); // Asigna un ID único a la ruta
 
-        // Verificar el estado del Switch
-        if (switchTipoRuta.isChecked()) {
-            // Si el Switch está activado, la ruta es de Cuatrovientos a la calle seleccionada
-            route.setLugarInicio("Cuatrovientos");
-            route.setLugarFin(actvStreetName.getText().toString());
-        } else {
-            // Si el Switch está desactivado, la ruta es de la calle seleccionada a Cuatrovientos
-            route.setLugarInicio(actvStreetName.getText().toString());
-            route.setLugarFin("Cuatrovientos");
+            // Verificar el estado del Switch
+            if (switchTipoRuta.isChecked()) {
+                // Si el Switch está activado, la ruta es de Cuatrovientos a la calle seleccionada
+                textoTipoRuta.setText("De Cuatrovientos a: "+ actvStreetName.getText().toString());
+                route.setLugarInicio("Cuatrovientos");
+                route.setLugarFin(actvStreetName.getText().toString());
+                //Todo: guardar numero de la calle
+            } else {
+                // Si el Switch está desactivado, la ruta es de la calle seleccionada a Cuatrovientos
+                route.setLugarInicio(actvStreetName.getText().toString());
+                route.setLugarFin("Cuatrovientos");
+            }
+
+            route.setHoraSalida(new Date()); // Usa la fecha y hora actual
+            route.setHuecos(Integer.parseInt(etHuecos.getText().toString())); // Configura el número de huecos
+            route.setPropietario(LoguedUser.StaticLogedUser.getUser().getMail()); // Configura el propietario de la ruta como el usuario logueado
+
+            // Ejecutar la operación de escritura en un hilo en segundo plano
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // Obtener una instancia de Realm en este hilo
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.copyToRealm(route);
+                        }
+                    });
+                    realm.close();
+                }
+            }).start();
+
+            // Mostrar un mensaje de éxito
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(AddRouteActivity.this, "Ruta guardada con éxito", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
-
-        route.setHoraSalida(new Date()); // Usa la fecha y hora actual
-        route.setHuecos(Integer.parseInt(etHuecos.getText().toString())); // Configura el número de huecos
-        route.setPropietario(LoguedUser.StaticLogedUser.getUser().getMail()); // Configura el propietario de la ruta como el usuario logueado
-
-        // Ejecutar la operación de escritura en un hilo en segundo plano
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Obtener una instancia de Realm en este hilo
-                Realm realm = Realm.getDefaultInstance();
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        realm.copyToRealm(route);
-                    }
-                });
-                realm.close();
-            }
-        }).start();
-
-        // Mostrar un mensaje de éxito
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(AddRouteActivity.this, "Ruta guardada con éxito", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-});
+    });
 
     }
 }

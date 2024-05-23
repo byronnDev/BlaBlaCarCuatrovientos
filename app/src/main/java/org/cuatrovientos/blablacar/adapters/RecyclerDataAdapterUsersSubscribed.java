@@ -3,74 +3,89 @@ package org.cuatrovientos.blablacar.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import org.cuatrovientos.blablacar.R;
+import org.cuatrovientos.blablacar.models.Route;
 import org.cuatrovientos.blablacar.models.User;
 
+import java.util.List;
+
 import io.realm.RealmList;
-import io.realm.RealmResults;
 
-public class RecyclerDataAdapterUsersSubscribed extends RecyclerView.Adapter<RecyclerDataAdapterUsersSubscribed.ViewHolder> {
+public class RecyclerDataAdapterUsersSubscribed extends RecyclerView.Adapter<RecyclerDataAdapterUsersSubscribed.RecyclerDataHolder>{
+    List<String> listaDeElementos;
+    OnItemClickListener itemListener;
+    Boolean isPorpietario;
 
-    private RealmResults<User> dataList;
-    private OnItemClickListener listener;
+    public RecyclerDataAdapterUsersSubscribed(List<String> usuariosApuntados) {
 
-    public RecyclerDataAdapterUsersSubscribed(RealmList<String> usuariosApuntados) {
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(User item);
+    public RecyclerDataAdapterUsersSubscribed( Boolean isPorpietario,List<String> lista, OnItemClickListener listener){
+        this.isPorpietario = isPorpietario;
+        listaDeElementos = lista;
+        itemListener = listener;
     }
 
-    public RecyclerDataAdapterUsersSubscribed(RealmResults<User> dataList, OnItemClickListener listener) {
-        if (dataList == null || listener == null) {
-            throw new IllegalArgumentException("dataList and listener must not be null");
-        }
-        this.dataList = dataList;
-        this.listener = listener;
-    }
+
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.usuarioa_puntado_layout, parent, false);
-        return new ViewHolder(itemView);
+    public RecyclerDataAdapterUsersSubscribed.RecyclerDataHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.usuarioa_puntado_layout,null,false);
+        return new RecyclerDataHolder(view);
     }
 
+
+
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        User item = dataList.get(position);
-        holder.bind(item, listener);
+    public void onBindViewHolder(@NonNull RecyclerDataAdapterUsersSubscribed.RecyclerDataHolder holder, int position) {
+        holder.assignData(listaDeElementos.get(position), itemListener);
     }
 
     @Override
     public int getItemCount() {
-        return dataList.size();
+        return listaDeElementos.size();
     }
-    public void updateData(RealmResults<User> newData) {
-        this.dataList = newData;
-        notifyDataSetChanged();
-    }
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView mail;
 
-        public ViewHolder(@NonNull View itemView) {
+    public class RecyclerDataHolder extends RecyclerView.ViewHolder {
+        TextView tvMailusuarioApuntado;
+        Button btnBan;
+
+        public RecyclerDataHolder(@NonNull View itemView) {
             super(itemView);
-            mail = itemView.findViewById(R.id.tvmail);
+            //SETEAR BOTON
+            tvMailusuarioApuntado = itemView.findViewById(R.id.tvmail);
+            btnBan = itemView.findViewById(R.id.btnBan);
+            if (!isPorpietario){
+                btnBan.setVisibility(View.GONE);
+            }else{
+                btnBan.setVisibility(View.VISIBLE);
+            }
         }
+        public void assignData(String user1, OnItemClickListener listener) {
+//            tvMailusuarioApuntado.setText();
 
-        public void bind(final User item, final OnItemClickListener listener) {
-            mail.setText(item.getMail());
-            itemView.setOnClickListener(new View.OnClickListener() {
+            tvMailusuarioApuntado.setText(user1);
+            //TODO setear vien, lo que regresa es un Date
+            //tvHoraSalida.setText(route.getHoraSalida());
+            btnBan.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onItemClick(item);
+                    //baneamos al usuario
+                    listener.onItemClick(user1);
                 }
             });
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(String conten);
+
     }
 }

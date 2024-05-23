@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,6 +36,7 @@ import org.cuatrovientos.blablacar.models.User;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 
 public class FragmentDetails extends Fragment {
@@ -52,29 +54,54 @@ public class FragmentDetails extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
+
         btnUnirse = view.findViewById(R.id.btnUnirse);
         tvLugarInicio = view.findViewById(R.id.tvLugarInicio);
         tvLugarFin = view.findViewById(R.id.tvLugarFin);
         tvHuecos = view.findViewById(R.id.tvHuecos);
         tvHoraSalida = view.findViewById(R.id.tvHoraSalida);
         recyclerView = view.findViewById(R.id.rvPasajeros);
+
         return view;
     }
 
     public void renderData(String idRuta) {
         realm = Realm.getDefaultInstance();
         route = realm.where(Route.class).equalTo("id", Integer.parseInt(idRuta)).findFirst();
+        Boolean isUserPropietario = route.getPropietario().equals(LoguedUser.StaticLogedUser.getUser().getMail());
         user = LoguedUser.StaticLogedUser.getUser();
 
         tvLugarInicio.setText(tvLugarInicio.getText()+ route.getLugarInicio());
         tvLugarFin.setText(tvLugarFin.getText()+ route.getLugarFin());
         tvHuecos.setText(tvHuecos.getText()+ String.valueOf(route.getHuecos()));
         tvHoraSalida.setText(tvHoraSalida.getText()+ String.valueOf(route.getHoraSalida().getHours())+":"+String.valueOf(route.getHoraSalida().getMinutes()));
-        //añadirmos los usuarios apunadoas al recycler view
-        recyclerView.setAdapter(new RecyclerDataAdapterUsersSubscribed(
-                route.getUsuariosApuntados()
-        ));
+        //realm de los usuarios baneados de la ruta
+        RealmList<String> usuarioApuntados = route.getUsuariosApuntados();
+        RecyclerDataAdapterUsersSubscribed recyclerDataAdapterUsersSubscribed = new RecyclerDataAdapterUsersSubscribed(isUserPropietario ,usuarioApuntados, new RecyclerDataAdapterUsersSubscribed.OnItemClickListener() {
+            @Override
+            public void onItemClick(String user) {
+                //TODO implementar baneo de usuario
+                RealmList<String> listaUsuariosBaneados= route.getUsuariosBaneados();
+                RealmList<String> listaUsuariosApuntados= route.getUsuariosApuntados();
+                realm.beginTransaction();
 
+                if (listaUsuariosBaneados == null) {
+                    listaUsuariosBaneados = new RealmList<>();
+                }
+                listaUsuariosBaneados.add(user);
+                listaUsuariosApuntados.remove(user);
+                route.setHuecos(route.getHuecos() + 1);
+
+
+                realm.commitTransaction();
+                Toast.makeText(getContext(), "has baneado al usuario " + user, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        this.recyclerView.setAdapter(recyclerDataAdapterUsersSubscribed);
+
+        //añadirmos los usuarios apunadoas al recycler view
             btnUnirse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,10 +132,7 @@ public class FragmentDetails extends Fragment {
 
                 // Restar 1 al número de huecos de la ruta
                 route.setHuecos(route.getHuecos() - 1);
-
-                // Confirmar la transacción de escritura
                 realm.commitTransaction();
-
                 Toast.makeText(getContext(), "Te has apuntado a la ruta + (100 O2-Points)", Toast.LENGTH_SHORT).show();
             }
         });

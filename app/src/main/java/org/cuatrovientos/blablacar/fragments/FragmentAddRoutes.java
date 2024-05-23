@@ -110,8 +110,10 @@ public class FragmentAddRoutes extends Fragment {
         } else {
             //Filtro con los baneos aqui
             //RealmResults<Route> realmResultsAll= realm.where(Route.class).findAll();
-            realmResults = realm.where(Route.class).not().in("usuariosBaneados", new String[]{LoguedUser.StaticLogedUser.getUser().getMail().toString()}).findAll();
-
+            realmResults = realm.where(Route.class)
+                .not().in("usuariosBaneados", new String[]{LoguedUser.StaticLogedUser.getUser().getMail().toString()})
+                .greaterThan("huecos", 0)
+                .findAll();
         }
 
         RecyclerDataAdapter routeAdapter = new RecyclerDataAdapter(realmResults, conten -> {
