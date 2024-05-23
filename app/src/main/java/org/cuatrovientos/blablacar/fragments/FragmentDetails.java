@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,6 +27,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.cuatrovientos.blablacar.R;
 import org.cuatrovientos.blablacar.activities.MainActivity;
+import org.cuatrovientos.blablacar.adapters.RecyclerDataAdapter;
+import org.cuatrovientos.blablacar.adapters.RecyclerDataAdapterUsersSubscribed;
 import org.cuatrovientos.blablacar.models.LoguedUser;
 import org.cuatrovientos.blablacar.models.Route;
 import org.cuatrovientos.blablacar.models.User;
@@ -43,6 +46,7 @@ public class FragmentDetails extends Fragment {
     private TextView tvHoraSalida;
     private Realm realm;
     private User user;
+    private RecyclerView recyclerView;
 
     @Nullable
     @Override
@@ -53,6 +57,7 @@ public class FragmentDetails extends Fragment {
         tvLugarFin = view.findViewById(R.id.tvLugarFin);
         tvHuecos = view.findViewById(R.id.tvHuecos);
         tvHoraSalida = view.findViewById(R.id.tvHoraSalida);
+        recyclerView = view.findViewById(R.id.rvPasajeros);
         return view;
     }
 
@@ -65,43 +70,48 @@ public class FragmentDetails extends Fragment {
         tvLugarFin.setText(tvLugarFin.getText()+ route.getLugarFin());
         tvHuecos.setText(tvHuecos.getText()+ String.valueOf(route.getHuecos()));
         tvHoraSalida.setText(tvHoraSalida.getText()+ String.valueOf(route.getHoraSalida().getHours())+":"+String.valueOf(route.getHoraSalida().getMinutes()));
-        btnUnirse.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            // Comprobar si el usuario ya está apuntado a la ruta
-            if(route.getUsuariosApuntados().contains(user.getMail())){
-                Toast.makeText(getContext(), "Ya estás apuntado a esta ruta", Toast.LENGTH_SHORT).show();
-                return;
+        //añadirmos los usuarios apunadoas al recycler view
+        recyclerView.setAdapter(new RecyclerDataAdapterUsersSubscribed(
+                route.getUsuariosApuntados()
+        ));
+
+            btnUnirse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Comprobar si el usuario ya está apuntado a la ruta
+                if(route.getUsuariosApuntados().contains(user.getMail())){
+                    Toast.makeText(getContext(), "Ya estás apuntado a esta ruta", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Comprobar si hay huecos disponibles en la ruta
+                if(route.getHuecos() <= 0){
+                    Toast.makeText(getContext(), "No hay huecos disponibles en esta ruta", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Iniciar una transacción de escritura
+                realm.beginTransaction();
+
+                // Añadir el correo del usuario a la lista de usuarios apuntados de la ruta
+                RealmList<String> listaUsuariosApuntados = route.getUsuariosApuntados();
+                if (listaUsuariosApuntados == null) {
+                    listaUsuariosApuntados = new RealmList<>();
+                }
+                listaUsuariosApuntados.add(user.getMail());
+
+                //añadimos 100 puntos al usuario
+                user.setO2Points(user.getO2Points() + 100);
+
+                // Restar 1 al número de huecos de la ruta
+                route.setHuecos(route.getHuecos() - 1);
+
+                // Confirmar la transacción de escritura
+                realm.commitTransaction();
+
+                Toast.makeText(getContext(), "Te has apuntado a la ruta + (100 O2-Points)", Toast.LENGTH_SHORT).show();
             }
-
-            // Comprobar si hay huecos disponibles en la ruta
-            if(route.getHuecos() <= 0){
-                Toast.makeText(getContext(), "No hay huecos disponibles en esta ruta", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Iniciar una transacción de escritura
-            realm.beginTransaction();
-
-            // Añadir el correo del usuario a la lista de usuarios apuntados de la ruta
-            RealmList<String> listaUsuariosApuntados = route.getUsuariosApuntados();
-            if (listaUsuariosApuntados == null) {
-                listaUsuariosApuntados = new RealmList<>();
-            }
-            listaUsuariosApuntados.add(user.getMail());
-
-            //añadimos 100 puntos al usuario
-            user.setO2Points(user.getO2Points() + 100);
-
-            // Restar 1 al número de huecos de la ruta
-            route.setHuecos(route.getHuecos() - 1);
-
-            // Confirmar la transacción de escritura
-            realm.commitTransaction();
-
-            Toast.makeText(getContext(), "Te has apuntado a la ruta + (100 O2-Points)", Toast.LENGTH_SHORT).show();
-        }
-    });
+        });
     }
 
     public interface DataListener {

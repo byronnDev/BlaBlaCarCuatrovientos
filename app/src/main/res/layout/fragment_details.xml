@@ -64,4 +64,13 @@
         android:text="Unirse"
         android:textSize="18sp" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPasajeros"
+        android:layout_width="336dp"
+        android:layout_height="205dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="176dp" />
+
 </RelativeLayout>
