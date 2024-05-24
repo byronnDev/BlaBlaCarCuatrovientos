@@ -59,14 +59,13 @@ public class FragmentAddRoutes extends Fragment {
         btnAddRoute = view.findViewById(R.id.btnAddRoute);
         recyclerView = view.findViewById(R.id.recyclerRutas);
 
-        String location = null;
+        String location = getArguments() != null ? getArguments().getString("location") : null;
         // Obtener el propietario y la fecha seleccionada del Bundle
         String propietario = getArguments() != null ? getArguments().getString("propietario") : null;
         String dateString = getArguments() != null ? getArguments().getString("selectedDate") : null;
         Date selectedDate = null;
         if (getArguments() != null) {
-            location = getArguments().getString("location");
-            if (selectedDate != null && location != null) {
+            if (dateString != null && location != null) {
                 selectedDate = parseDate(dateString);
                 Log.d(TAG, "onCreateView: " + selectedDate);
                 Log.d(TAG, "onCreateView: " + location);
@@ -78,7 +77,7 @@ public class FragmentAddRoutes extends Fragment {
             }
         }
 
-        if (isFiltering && selectedDate != null && location != null) {
+        if (isFiltering && selectedDate != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(selectedDate);
             calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -95,6 +94,15 @@ public class FragmentAddRoutes extends Fragment {
                     .greaterThanOrEqualTo("horaSalida", startOfDay)
                     .lessThan("horaSalida", endOfDay)
                     .findAll();
+
+            // Si no encuentra rutas con el lugar de inicio busca por el lugarFin
+            if (realmResults.isEmpty()) {
+                realmResults = realm.where(Route.class)
+                        .contains("lugarFin", location, Case.INSENSITIVE)
+                        .greaterThanOrEqualTo("horaSalida", startOfDay)
+                        .lessThan("horaSalida", endOfDay)
+                        .findAll();
+            }
 
         } else if (isUserFilter) {
             // Filtrar por usuario logueado aquí si el argumento propietario está presente
