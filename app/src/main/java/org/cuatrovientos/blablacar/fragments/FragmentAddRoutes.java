@@ -77,7 +77,7 @@ public class FragmentAddRoutes extends Fragment {
             }
         }
 
-        if (isFiltering && selectedDate != null) {
+        if (isFiltering && selectedDate != null && location != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(selectedDate);
             calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -90,19 +90,14 @@ public class FragmentAddRoutes extends Fragment {
             Date endOfDay = calendar.getTime();
 
             realmResults = realm.where(Route.class)
+                    .beginGroup()
                     .contains("lugarInicio", location, Case.INSENSITIVE)
+                    .or()
+                    .contains("lugarFin", location, Case.INSENSITIVE)
+                    .endGroup()
                     .greaterThanOrEqualTo("horaSalida", startOfDay)
                     .lessThan("horaSalida", endOfDay)
                     .findAll();
-
-            // Si no encuentra rutas con el lugar de inicio busca por el lugarFin
-            if (realmResults.isEmpty()) {
-                realmResults = realm.where(Route.class)
-                        .contains("lugarFin", location, Case.INSENSITIVE)
-                        .greaterThanOrEqualTo("horaSalida", startOfDay)
-                        .lessThan("horaSalida", endOfDay)
-                        .findAll();
-            }
 
         } else if (isUserFilter) {
             // Filtrar por usuario logueado aquí si el argumento propietario está presente
