@@ -65,6 +65,7 @@ public class FragmentDetails extends Fragment {
         return view;
     }
 
+    @SuppressLint("RestrictedApi")
     public void renderData(String idRuta) {
         realm = Realm.getDefaultInstance();
         route = realm.where(Route.class).equalTo("id", Integer.parseInt(idRuta)).findFirst();
@@ -74,7 +75,13 @@ public class FragmentDetails extends Fragment {
         tvLugarInicio.setText(tvLugarInicio.getText()+ route.getLugarInicio());
         tvLugarFin.setText(tvLugarFin.getText()+ route.getLugarFin());
         tvHuecos.setText(tvHuecos.getText()+ String.valueOf(route.getHuecos()));
-        tvHoraSalida.setText(tvHoraSalida.getText()+ String.valueOf(route.getHoraSalida().getHours())+":"+String.valueOf(route.getHoraSalida().getMinutes()));
+        if (route.getHoraSalida() != null) {
+            tvHoraSalida.setText(tvHoraSalida.getText() + String.valueOf(route.getHoraSalida().getHours()) + ":" + String.valueOf(route.getHoraSalida().getMinutes()));
+        } else {
+            // Manejar el caso en que route.getHoraSalida() es nulo
+            // Por ejemplo, mostrar un mensaje de error o asignar un valor predeterminado a tvHoraSalida
+            Log.e(TAG,"La hora de salida es nula");
+        }
         //realm de los usuarios baneados de la ruta
         RealmList<String> usuarioApuntados = route.getUsuariosApuntados();
         RecyclerDataAdapterUsersSubscribed recyclerDataAdapterUsersSubscribed = new RecyclerDataAdapterUsersSubscribed(isUserPropietario ,usuarioApuntados, new RecyclerDataAdapterUsersSubscribed.OnItemClickListener() {
@@ -120,12 +127,15 @@ public class FragmentDetails extends Fragment {
                 // Iniciar una transacción de escritura
                 realm.beginTransaction();
 
-                // Añadir el correo del usuario a la lista de usuarios apuntados de la ruta
                 RealmList<String> listaUsuariosApuntados = route.getUsuariosApuntados();
-                if (listaUsuariosApuntados == null) {
+                if (listaUsuariosApuntados != null) {
+                    listaUsuariosApuntados.add(user.getMail());
+                } else {
+                    // Manejar el caso en que la lista de usuarios apuntados sea nula
+                    // Por ejemplo, mostrar un mensaje de error o asignar una lista vacía
+                    Log.e(TAG, "La lista de usuarios apuntados es nula");
                     listaUsuariosApuntados = new RealmList<>();
                 }
-                listaUsuariosApuntados.add(user.getMail());
 
                 //añadimos 100 puntos al usuario
                 user.setO2Points(user.getO2Points() + 100);

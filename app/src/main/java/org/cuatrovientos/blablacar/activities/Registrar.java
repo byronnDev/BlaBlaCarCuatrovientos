@@ -65,6 +65,7 @@ public class Registrar extends AppCompatActivity {
             user.setSurname(surname);
             user.setPass(User.hashPassword(pass));
             user.setPhone(phone);
+            user.setO2Points(0);
         }, () -> {
             // Transaction was successful
             Toast.makeText(this, "Usuario registrado con éxito!", Toast.LENGTH_SHORT).show();
