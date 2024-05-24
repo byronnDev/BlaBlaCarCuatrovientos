@@ -22,12 +22,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import io.realm.Realm;
@@ -55,6 +57,7 @@ public class AddRouteActivity extends AppCompatActivity {
     private TextView textoTipoRuta;
 
     private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,56 +152,104 @@ public class AddRouteActivity extends AppCompatActivity {
         };
         actvStreetName.setAdapter(adapter);
 
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validateInputs()) {
+                    // Crear una nueva instancia de Route
+                    final Route route = new Route();
+                    route.setId(MyApplication.rutaID.incrementAndGet()); // Asigna un ID único a la ruta
 
-       btnSave.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            // Crear una nueva instancia de Route
-            final Route route = new Route();
-            route.setId(MyApplication.rutaID.incrementAndGet()); // Asigna un ID único a la ruta
+                    // Verificar el estado del Switch
+                    if (switchTipoRuta.isChecked()) {
+                        // Si el Switch está activado, la ruta es de Cuatrovientos a la calle seleccionada
+                        textoTipoRuta.setText("De Cuatrovientos a: " + actvStreetName.getText().toString());
+                        route.setLugarInicio("Cuatrovientos");
+                        route.setLugarFin(actvStreetName.getText().toString());
+                        //Todo: guardar numero de la calle
+                    } else {
+                        // Si el Switch está desactivado, la ruta es de la calle seleccionada a Cuatrovientos
+                        route.setLugarInicio(actvStreetName.getText().toString());
+                        route.setLugarFin("Cuatrovientos");
+                    }
 
-            // Verificar el estado del Switch
-            if (switchTipoRuta.isChecked()) {
-                // Si el Switch está activado, la ruta es de Cuatrovientos a la calle seleccionada
-                textoTipoRuta.setText("De Cuatrovientos a: "+ actvStreetName.getText().toString());
-                route.setLugarInicio("Cuatrovientos");
-                route.setLugarFin(actvStreetName.getText().toString());
-                //Todo: guardar numero de la calle
-            } else {
-                // Si el Switch está desactivado, la ruta es de la calle seleccionada a Cuatrovientos
-                route.setLugarInicio(actvStreetName.getText().toString());
-                route.setLugarFin("Cuatrovientos");
-            }
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                    try {
+                        Date horaSalida = sdf.parse(etHoraSalida.getText().toString());
+                        route.setHoraSalida(horaSalida);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        Toast.makeText(AddRouteActivity.this, "Hora de salida inválida", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-            route.setHoraSalida(new Date()); // Usa la fecha y hora actual
-            route.setHuecos(Integer.parseInt(etHuecos.getText().toString())); // Configura el número de huecos
-            route.setPropietario(LoguedUser.StaticLogedUser.getUser().getMail()); // Configura el propietario de la ruta como el usuario logueado
+                    route.setHuecos(Integer.parseInt(etHuecos.getText().toString())); // Configura el número de huecos
+                    route.setPropietario(LoguedUser.StaticLogedUser.getUser().getMail()); // Configura el propietario de la ruta como el usuario logueado
 
-            // Ejecutar la operación de escritura en un hilo en segundo plano
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    // Obtener una instancia de Realm en este hilo
-                    Realm realm = Realm.getDefaultInstance();
-                    realm.executeTransaction(new Realm.Transaction() {
+                    // Ejecutar la operación de escritura en un hilo en segundo plano
+                    new Thread(new Runnable() {
                         @Override
-                        public void execute(Realm realm) {
-                            realm.copyToRealm(route);
+                        public void run() {
+                            // Obtener una instancia de Realm en este hilo
+                            Realm realm = Realm.getDefaultInstance();
+                            realm.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.copyToRealm(route);
+                                }
+                            });
+                            realm.close();
+                        }
+                    }).start();
+
+                    // Mostrar un mensaje de éxito
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(AddRouteActivity.this, "Ruta guardada con éxito", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    realm.close();
                 }
-            }).start();
+            }
+        });
 
-            // Mostrar un mensaje de éxito
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(AddRouteActivity.this, "Ruta guardada con éxito", Toast.LENGTH_SHORT).show();
-                }
-            });
+    }
+
+    private boolean validateInputs() {
+        if (actvStreetName.getText().toString().isEmpty()) {
+            Toast.makeText(this, "El nombre de la calle no puede estar vacío", Toast.LENGTH_SHORT).show();
+            return false;
         }
-    });
+        if (etStreetNumber.getText().toString().isEmpty()) {
+            Toast.makeText(this, "El número de la calle no puede estar vacío", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (etHuecos.getText().toString().isEmpty()) {
+            Toast.makeText(this, "El número de huecos no puede estar vacío", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (etHoraSalida.getText().toString().isEmpty()) {
+            Toast.makeText(this, "La hora de salida no puede estar vacía", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!isValidTime(etHoraSalida.getText().toString())) {
+            Toast.makeText(this, "Hora de salida inválida. Debe estar en formato 24h HH:mm y minutos menores de 60", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
 
+    private boolean isValidTime(String time) {
+        String[] parts = time.split(":");
+        if (parts.length != 2) {
+            return false;
+        }
+        try {
+            int hours = Integer.parseInt(parts[0]);
+            int minutes = Integer.parseInt(parts[1]);
+            return hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
