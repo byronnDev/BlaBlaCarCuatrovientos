@@ -58,6 +58,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_corner"
         android:ems="10"
+        android:text="ciudad a"
         android:hint="@string/ubication"
         android:inputType="text"
         android:padding="5dp"
