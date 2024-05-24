@@ -77,7 +77,7 @@ public class FragmentAddRoutes extends Fragment {
             }
         }
 
-        if (isFiltering && selectedDate != null && location != null) {
+        if (isFiltering && selectedDate != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(selectedDate);
             calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -97,6 +97,8 @@ public class FragmentAddRoutes extends Fragment {
                     .endGroup()
                     .greaterThanOrEqualTo("horaSalida", startOfDay)
                     .lessThan("horaSalida", endOfDay)
+                    .not().in("usuariosBaneados", new String[]{LoguedUser.StaticLogedUser.getUser().getMail().toString()})
+                    .greaterThan("huecos", 0)
                     .findAll();
 
         } else if (isUserFilter) {
