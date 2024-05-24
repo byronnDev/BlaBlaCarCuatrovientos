@@ -116,7 +116,7 @@ public class FragmentAddRoutes extends Fragment {
             //Filtro con los baneos aqui
             //RealmResults<Route> realmResultsAll= realm.where(Route.class).findAll();
             realmResults = realm.where(Route.class)
-                .not().in("usuariosBaneados", new String[]{LoguedUser.StaticLogedUser.getUser().getMail().toString()})
+                .not().in("usuariosBaneados", new String[]{LoguedUser.StaticLogedUser.getUser().getMail()})
                 .greaterThan("huecos", 0)
                 .findAll();
         }
