@@ -1,9 +1,12 @@
 package org.cuatrovientos.blablacar.activities;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,7 +50,7 @@ public class Registrar extends AppCompatActivity {
         String name = txtName.getText().toString().trim();
         String surname = txtSurname.getText().toString().trim();
         String mail = txtMail.getText().toString().trim();
-        String pass = txtPass.getText().toString();
+        String pass = txtPass.getText().toString().trim();
         String phone = txtPhone.getText().toString().trim();
 
         if (isEmailExist(mail)) {
@@ -55,17 +58,22 @@ public class Registrar extends AppCompatActivity {
             return;
         }
 
-        realm.executeTransaction(r -> {
+        realm.executeTransactionAsync(r -> {
             // Create a new User object
             User user = r.createObject(User.class, mail);  // Ensure your User class has a primary key
             user.setName(name);
             user.setSurname(surname);
             user.setPass(User.hashPassword(pass));
             user.setPhone(phone);
+        }, () -> {
+            // Transaction was successful
+            Toast.makeText(this, "Usuario registrado con éxito!", Toast.LENGTH_SHORT).show();
+            goHome();
+        }, error -> {
+            // Transaction failed
+            Log.e(TAG, "Error registering user: " + error.getMessage(), error);
+            Toast.makeText(this, "Error al registrar el usuario. Por favor, inténtalo de nuevo.", Toast.LENGTH_SHORT).show();
         });
-
-        Toast.makeText(this, "Usuario registrado con éxito!", Toast.LENGTH_SHORT).show();
-        goHome();
     }
 
     private void goHome() {
@@ -134,7 +142,7 @@ public class Registrar extends AppCompatActivity {
             return false;
         }
 
-        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{6,}$")) {
+        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%.^&+=!])(?=\\S+$).{6,}$")) {
             showErrorToast("La contraseña debe tener al menos un número, una mayúscula y un carácter especial.");
             return false;
         }
