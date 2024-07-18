@@ -42,7 +42,7 @@ We would love to receive contributions to improve this application! If you wish 
 ## Contact
 If you have any questions, suggestions, or encounter issues, feel free to reach out to us:
 
-- Mikel Echeverria: [mikel.e.g.2004@gmail.](mailto:mikel.e.g.2004@gmail.)
+- Mikel Echeverria: [mikel@mikeldev.com](mailto:mikel@mikeldev.com)
 - Juan Hidalgo: [hsjuan7@gmail.com](mailto:hsjuan7@gmail.com)
 - Aitor Gorostizu: [aitor.gorostizu@gmail.com](mailto:aitor.gorostizu@gmail.com)
 
